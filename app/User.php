@@ -18,7 +18,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'nip', 'jabatan', 
+        'atasan_1_id', 'atasan_2_id', 'atasan_3_id','pangkat_id', 
+        'satuan_kerja_id', 'is_atasan'
     ];
 
     /**
@@ -42,5 +44,17 @@ class User extends Authenticatable
     public function setPasswordAttribute($password)
     {   
       $this->attributes['password'] = bcrypt($password);
+    }
+
+    public function pangkat() {
+        return $this->hasOne(Pangkat::class);
+    }
+
+    public function satuan_kerja() {
+        return $this->hasOne(SatuanKerja::class);
+    }
+
+    public function skp_tahunan_header() {
+        return $this->hasMany(SkpTahunanHeader::class);
     }
 }

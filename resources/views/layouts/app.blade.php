@@ -38,8 +38,8 @@
         <!-- Sidebar Header    -->
         <div class="sidenav-header d-flex align-items-center justify-content-center">
           <!-- User Info-->
-          <div class="sidenav-header-inner text-center"><img src="{{URL::asset('img/user.jpg')}}" alt="person" class="img-fluid rounded-circle">
-            <h2 class="h5">Santosh Kumar Dash</h2><span>Web Developer</span>
+          <div class="sidenav-header-inner text-center"><a href="{{ route('profile.edit', Auth::id()) }}"><img src="{{URL::asset('img/user.jpg')}}" alt="person" class="img-fluid rounded-circle">
+            <h2 class="h5">{{ Auth::user()->name }}</h2><span>{{ Auth::user()->jabatan }}</span></a>
           </div>
           <!-- Small Brand information, appears on minimized sidebar-->
           <div class="sidenav-header-logo"><a href="index.html" class="brand-small text-center"> <img src="{{URL::asset('img/ld.png')}}" class="img-thumbnail"></a></div>
@@ -80,26 +80,47 @@
           </ul>
         </div>
         
-        <div class="admin-menu">
-          <h5 class="sidenav-heading">Admin menu</h5>
-          <ul id="side-admin-menu" class="side-menu list-unstyled"> 
-              <li class=""><a href="#userDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-users"></i>User Management</a>
-                <ul id="userDropdown" class="collapse list-unstyled ">
-                   <li class="{{Request::is('users/create')? 'active' : null }}"><a href="{{ route('users.create') }}">Add User</a></li>
-                   <li class="{{Request::is('users')? 'active' : null }}"><a href="{{ route('users.index') }}">Users List</a></li>
-             
-                </ul>
-              </li>
-              <li class=""><a href="#roleDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-user-secret" aria-hidden="true"></i>Role Permission</a>
-                <ul id="roleDropdown" class="collapse list-unstyled ">
-                   <li class="{{Request::is('roles')? 'active' : null }}"><a href="{{ route('roles.index') }}">Manage Role</a></li>
-                   <li class="{{Request::is('permissions')? 'active' : null }}"><a href="{{ route('permissions.index') }}">Manage Permission</a></li>
-                   
-                </ul>
-              </li>
+        @role('Administrator')
+          <div class="admin-menu">
+            <h5 class="sidenav-heading">Admin menu</h5>
+            <ul id="side-admin-menu" class="side-menu list-unstyled"> 
+                <li class=""><a href="#userDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-users"></i>User Management</a>
+                  <ul id="userDropdown" class="collapse list-unstyled ">
+                    @can('tambah user')
+                      <li class="{{Request::is('users/create')? 'active' : null }}"><a href="{{ route('users.create') }}">Add User</a></li>
+                    @endcan
+                    @can('lihat user')
+                      <li class="{{Request::is('users')? 'active' : null }}"><a href="{{ route('users.index') }}">Users List</a></li>
+                    @endcan
+              
+                  </ul>
+                </li>
+                <li class=""><a href="#roleDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-user-secret" aria-hidden="true"></i>Role Permission</a>
+                  <ul id="roleDropdown" class="collapse list-unstyled ">
+                    <li class="{{Request::is('roles')? 'active' : null }}"><a href="{{ route('roles.index') }}">Manage Role</a></li>
+                    <li class="{{Request::is('permissions')? 'active' : null }}"><a href="{{ route('permissions.index') }}">Manage Permission</a></li>
+                    {{-- <li class="{{Request::is('skp/tahunan')? 'active' : null }}"><a href="{{ route('skptahunan.index') }}">Manage SKP</a></li> --}}
+                  </ul>
+                </li>
 
+            </ul>
+          </div>
+        @endrole
+
+        @hasanyrole('Administrator|Kepegawaian|Pegawai')
+        <div class="admin-menu">
+          <h5 class="sidenav-heading">SKP menu</h5>
+          <ul id="side-admin-menu" class="side-menu list-unstyled"> 
+              <li class=""><a href="#skpDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-user-secret" aria-hidden="true"></i>Sasaran Kerja Pegawai</a>
+                <ul id="skpDropdown" class="collapse list-unstyled ">
+                  <li class="{{Request::is('skp/tahunan')? 'active' : null }}"><a href="{{ route('tahunan.index') }}">SKP Tahunan</a></li>
+                  {{-- <li class="{{Request::is('skp/bulanan')? 'active' : null }}"><a href="{{ route('bulanan.index') }}">SKP Bulanan</a></li> --}}
+                </ul>
+              </li>
           </ul>
         </div>
+        @endhasanyrole
+        
 
       </div>
     </nav>

@@ -49,24 +49,26 @@ class RoleController extends Controller {
     //Validate name and permissions field
         $this->validate($request, [
             'name'=>'required|unique:roles|max:10',
-            'permissions' =>'required',
+            // 'permissions' =>'required',
             ]
         );
 
         $name = $request['name'];
-        $role = new Role();
-        $role->name = $name;
+        $role = Role::create(['name'=> $name]);
 
-        $permissions = $request['permissions'];
+        // $role->save();
+        //Looping thru selected permissions
+        if (!empty($request['permissions'])) {
+            $permissions = $request['permissions'];
 
-        $role->save();
-    //Looping thru selected permissions
-        foreach ($permissions as $permission) {
-            $p = Permission::where('id', '=', $permission)->firstOrFail(); 
-         //Fetch the newly created role and assign permission
-            $role = Role::where('name', '=', $name)->first(); 
-            $role->givePermissionTo($p);
+            foreach ($permissions as $permission) {
+                $p = Permission::where('id', '=', $permission)->firstOrFail(); 
+            //Fetch the newly created role and assign permission
+                $role = Role::where('name', '=', $name)->first(); 
+                $role->givePermissionTo($p);
+            }
         }
+            
 
         return redirect()->route('roles.index')
             ->with('flash_message',

@@ -10,8 +10,8 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-// use Spatie\Permission\Models\Role;
-// use Spatie\Permission\Models\Permission; 
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission; 
 
 // Route::get('/', function () {
 // 	    return view('welcome');
@@ -90,12 +90,24 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('permissions', 'PermissionController');
 
     Route::resource('posts', 'PostController');
-
 });
 
- // Route::get('/create_role_permission', function(){
- //        $role = Role::create(['name'=> 'Administer']);
- //        $permission = Permission::create(['name'=> 'Administer roles & permissions']);
- //        auth()->user()->assignRole('Administer');
- //        auth()->user()->givePermissionTo('Administer roles & permissions');
- //    });
+Route::resource('profile', 'ProfileController');
+
+Route::group(['prefix'=>'skp'], function(){
+	Route::resource('/tahunan', 'SkpTahunanController');
+	Route::group(['prefix'=>'tahunan'], function ()
+	{
+		// Route::resource('target.index', 'SkpTahunanTargetController@index');
+		Route::get('/target/{id}/create', 'SkpTahunanTargetController@create');
+		Route::resource('/target', 'SkpTahunanTargetController');
+	});
+});
+
+
+ Route::get('/create_role_permission', function(){
+        $role = Role::create(['name'=> 'Administrator']);
+        $permission = Permission::create(['name'=> 'Administrator']);
+        auth()->user()->assignRole('Administrator');
+        auth()->user()->givePermissionTo('Administrator');
+    });
