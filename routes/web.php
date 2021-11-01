@@ -98,9 +98,18 @@ Route::group(['prefix'=>'skp'], function(){
 	Route::resource('/tahunan', 'SkpTahunanController');
 	Route::group(['prefix'=>'tahunan'], function ()
 	{
-		// Route::resource('target.index', 'SkpTahunanTargetController@index');
+
 		Route::get('/target/{id}/create', 'SkpTahunanTargetController@create');
 		Route::resource('/target', 'SkpTahunanTargetController');
+
+		Route::get('/realisasi/{id}/create', 'SkpTahunanRealisasiController@create');
+		Route::resource('/realisasi', 'SkpTahunanRealisasiController');
+
+		Route::get('/tugas/{id}/create', 'TugasTambahanController@create');
+		Route::resource('/tugas', 'TugasTambahanController');
+
+		Route::get('/kreativitas/{id}/create', 'KreativitasController@create');
+		Route::resource('/kreativitas', 'KreativitasController');
 	});
 });
 

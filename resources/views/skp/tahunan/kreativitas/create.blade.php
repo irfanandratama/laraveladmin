@@ -1,7 +1,6 @@
-{{-- \resources\views\users\create.blade.php --}}
 @extends('layouts.app')
 
-@section('title', '| Add Target SKP Tahunan')
+@section('title', '| Add Tugas Tambahan')
 
 @section('content')
 
@@ -39,7 +38,7 @@
                   <br>
                   <div class="card">
                       <div class="card-header">
-                          <strong class="card-title"> <h1><i class='fa fa-user-plus'></i> Add Target SKP Tahunan </h1></strong>
+                          <strong class="card-title"> <h1><i class='fa fa-user-plus'></i> Add Kreativitas </h1></strong>
                       </div>
                       <div class="card-body">  
                         @if ($errors->any())
@@ -52,42 +51,34 @@
                             </div>
                         @endif
 
-                        {{ Form::model($skpline, array('route' => array('target.update', $skpline->id), 'method' => 'PUT')) }}
+                        {{ Form::open(array('route' => 'kreativitas.store')) }}
 
                         <div class="form-group">
-                            {{ Form::label('kegiatan', 'Kegiatan Tahunan') }}
-                            {{ Form::textarea('kegiatan', null, array('class' => 'form-control', 'rows', 'name'=>'kegiatan', 'id'=>'kegiatan')) }}
-                        </div>
-
-                        <div class="form-group">
-                            {{ Form::label('kuantitas_target', 'Target Kuantitas') }}
-                            {{ Form::number('kuantitas_target', null, array('class' => 'form-control')) }}
-                            {{ Form::hidden('kualitas_target', $skpline->kualitas_target) }}
-                        </div>
-
-                        <div>
-                            {{ Form::label('satuan_kegiatan', 'Satuan Kegiatan') }}
-                            {{ Form::select('satuan_kegiatan_id', $satuankegiatan->prepend('-- Silahkan Pilih Satuan Kegiatan --', ''), null, array('class' => 'form-control')) }}
+                            {{ Form::label('tahun', 'Tanggal') }}
+                            {{ Form::date('tanggal_kreativitas', null, array('class' => 'form-control', 'min' => \Carbon\Carbon::now()->year.'-01-01', 'max' => \Carbon\Carbon::now()->add(1, 'year')->year.'-12-31')) }}
                         </div>
 
                         <div class="form-group">
-                            {{ Form::label('angka_kredit', 'Angka Kredit') }}
-                            {{ Form::number('angka_kredit_target', null, array('class' => 'form-control')) }}
+                            {{ Form::label('nama_tugas', 'Kreativitas') }}
+                            {{ Form::textarea('kegiatan_kreativitas', null, array('class' => 'form-control', 'rows', 'name'=>'kegiatan_kreativitas', 'id'=>'kegiatan_kreativitas')) }}
                         </div>
 
                         <div class="form-group">
-                            {{ Form::label('waktu_target', 'Target Waktu (Dalam hitungan bulan)') }}<br>
-                            {{ Form::number('waktu_target', null, array('class' => 'form-control')) }}
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6">
+                                    {{ Form::label('no_sk', 'Kuantitas') }}
+                                    {{ Form::text('kuantitas', null, array('class' => 'form-control')) }}
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    {{ Form::label('no_sk', 'Satuan Kuantitas') }}
+                                    {{ Form::select('satuan_kegiatan_id', $satuankegiatan->prepend('-- Silahkan Pilih Satuan Kegiatan --', ''), null, array('class' => 'form-control')) }}
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            {{ Form::label('biaya_target', 'Biaya') }}<br>
-                            {{ Form::number('biaya_target', null, array('class' => 'form-control')) }}
-                        </div>
+                        {{ Form::hidden('skp_tahunan_header_id', $skpheader->id)}}
 
-                        {{ Form::hidden('skp_tahunan_header_id', $skpline->skp_tahunan_header_id)}}
-
-                        {{ Form::submit('Update', array('class' => 'btn btn-primary')) }}
+                        {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}
 
                         {{ Form::close() }}
                     </div>

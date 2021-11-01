@@ -25,7 +25,7 @@ class SkpTahunanController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->hasRole(['Super-Admin', 'Administrator'])) {
+        if (Auth::user()->hasRole(['Super-Admin', 'Administrator', 'Kepegawaian'])) {
             $skps = SkpTahunanHeader::join('users', 'users.id', '=', 'skp_tahunan_header.user_id')
             ->get(['skp_tahunan_header.*', 'users.name']);
             $users = User::all()->pluck('name', 'id'); 

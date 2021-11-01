@@ -38,14 +38,14 @@
         <!-- Sidebar Header    -->
         <div class="sidenav-header d-flex align-items-center justify-content-center">
           <!-- User Info-->
-          <div class="sidenav-header-inner text-center"><a href="{{ route('profile.edit', Auth::id()) }}"><img src="{{URL::asset('img/user.jpg')}}" alt="person" class="img-fluid rounded-circle">
+          <div class="sidenav-header-inner text-center"><a href="{{ route('profile.edit', Auth::id()) }}"><img src="{{URL::asset('img/default-user.png')}}" alt="person" class="img-fluid rounded-circle">
             <h2 class="h5">{{ Auth::user()->name }}</h2><span>{{ Auth::user()->jabatan }}</span></a>
           </div>
           <!-- Small Brand information, appears on minimized sidebar-->
-          <div class="sidenav-header-logo"><a href="index.html" class="brand-small text-center"> <img src="{{URL::asset('img/ld.png')}}" class="img-thumbnail"></a></div>
+          <div class="sidenav-header-logo"><a href="index.html" class="brand-small text-center"> <img src="{{URL::asset('img/default-user.png')}}" class="img-thumbnail"></a></div>
         </div>
         <!-- Sidebar Navigation Menus-->
-        <div class="main-menu" id="sidebar-menu">
+        {{-- <div class="main-menu" id="sidebar-menu">
           <h5 class="sidenav-heading">Main</h5>
           <ul id="side-main-menu" class="side-menu list-unstyled">                  
             <li class="{{Request::is('/')? 'active' : null }}"><a href="{{url('/')}}"> <i class="fa fa-tachometer"></i>Home</a></li>
@@ -76,9 +76,9 @@
             <li class="{{Request::is('icon')? 'active' : null }}"><a href="{{url('icon')}}"> <i class="fa fa-tasks"></i>Icons</a></li>
             <li class="{{Request::is('widget')? 'active' : null }}"><a href="{{url('widget')}}"> <i class="fa fa-th-large"></i>Widget</a></li>
            
-           
+    
           </ul>
-        </div>
+        </div> --}}
         
         @role('Administrator')
           <div class="admin-menu">
@@ -131,16 +131,16 @@
           <div class="container-fluid">
             <div class="navbar-holder d-flex align-items-center justify-content-between">
               <div class="navbar-header"><a id="toggle-btn" href="#" class="menu-btn"><i class="fa fa-align-left fa-2x"></i></a><a href="index.html" class="navbar-brand">
-                  <div class="brand-text d-none d-md-inline-block"><span>Laravel </span><strong class="text-primary">Dashboard</strong></div></a></div>
+                  <div class="brand-text d-none d-md-inline-block"><span>SI </span><strong class="text-primary">SKP</strong></div></a></div>
               <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
-                <li class="nav-item"> 
+                {{-- <li class="nav-item"> 
                   <div class="searchbar">
                     <input class="search_input" type="text" name="" placeholder="Search...">
                     <a href="#" class="search_icon"><i class="fa fa-search"></i></a>
                   </div>
-               </li>
+               </li> --}}
                 <!-- Notifications dropdown-->
-                <li class="nav-item dropdown"> <a id="notifications" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link"><i class="fa fa-bell"></i><span class="badge badge-warning">12</span></a>
+                {{-- <li class="nav-item dropdown"> <a id="notifications" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link"><i class="fa fa-bell"></i><span class="badge badge-warning">12</span></a>
                   <ul aria-labelledby="notifications" class="dropdown-menu">
                     <li><a rel="nofollow" href="#" class="dropdown-item"> 
                         <div class="notification d-flex justify-content-between">
@@ -164,10 +164,10 @@
                         </div></a></li>
                     <li><a rel="nofollow" href="#" class="dropdown-item all-notifications text-center"> <strong> <i class="fa fa-bell"></i>view all notifications                                            </strong></a></li>
                   </ul>
-                </li>
+                </li> --}}
                 <!-- Messages dropdown-->
 
-                <li class="nav-item dropdown"> <a id="messages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link"><i class="fa fa-envelope"></i><span class="badge badge-info">10</span></a>
+                {{-- <li class="nav-item dropdown"> <a id="messages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link"><i class="fa fa-envelope"></i><span class="badge badge-info">10</span></a>
                   <ul aria-labelledby="notifications" class="dropdown-menu">
                     <li><a rel="nofollow" href="#" class="dropdown-item d-flex"> 
                         <div class="msg-profile"> <img src="img/user.jpg" alt="..." class="img-fluid rounded-circle"></div>
@@ -186,7 +186,7 @@
                         </div></a></li>
                     <li><a rel="nofollow" href="#" class="dropdown-item all-notifications text-center"> <strong> <i class="fa fa-envelope"></i>Read all messages    </strong></a></li>
                   </ul>
-                </li>
+                </li> --}}
                 
                 <!-- Log out-->
                 <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link logout"> <span class="d-none d-sm-inline-block">Logout</span><i class="fa fa-sign-out"></i></a></li>

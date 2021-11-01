@@ -15,7 +15,13 @@
                            <a href="" data-toggle="modal" data-target='#createModal' class="btn btn-default pull-right">Add SKP Tahunan</a>
                          </h1>
                       </div>
-                      <div class="card-body">  
+                      <div class="card-body">
+                        @if ($message = Session::get('flash_message'))
+                            <div class="alert alert-success alert-block">
+                            <button type="button" class="close" data-dismiss="alert">×</button>    
+                                <strong>{{ $message }}</strong>
+                            </div>
+                        @endif
                         @if ($errors->any())
                         <div class="alert alert-danger">
                                 <ul>
@@ -54,8 +60,16 @@
                                             {!! Form::close() !!}
                                         </td>
                                         <td>
+                                            @hasanyrole('Kepegawaian|Pegawai')
                                             <a href="{{ route('target.show', $skp->id) }}" class="btn btn-success pull-left" style="margin-right: 3px;">Target</a>
-                                            <a href="{{ URL::to('skp/tahunan/realisasi/'.$skp->id.'') }}" class="btn btn-success pull-left" style="margin-right: 3px;">Realisasi</a>
+                                            @endhasanyrole
+                                            @hasanyrole('Kepegawaian')
+                                            <a href="{{ route('realisasi.show', $skp->id) }}" class="btn btn-success pull-left" style="margin-right: 3px;">Realisasi</a>
+                                            @endhasanyrole
+                                            @hasanyrole('Kepegawaian|Pegawai')
+                                            <a href="{{ route('tugas.show', $skp->id) }}" class="btn btn-success pull-left" style="margin-right: 3px;">Tugas Tambahan</a>
+                                            <a href="{{ route('kreativitas.show', $skp->id) }}" class="btn btn-success pull-left" style="margin-right: 3px;">Kreativitas</a>
+                                            @endhasanyrole
                                         </td>
                                     </tr>
                                     @empty

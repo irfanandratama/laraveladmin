@@ -23,4 +23,12 @@ class SkpTahunanHeader extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function tugas_tambahan() {
+        return $this->hasMany(TugasTambahan::class);
+    }
+
+    public function kreativitas() {
+        return $this->hasMany(Kreativitas::class);
+    }
+
 }

@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use App\SkpTahunanLines;
 use App\SkpTahunanHeader;
 use App\SatuanKegiatan;
 use App\User;
-
-use Illuminate\Support\Facades\Auth;
 
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -29,8 +28,9 @@ class SkpTahunanTargetController extends Controller
         $skpheader = SkpTahunanHeader::findOrFail($id);
         $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)->get();
         $tahun = Carbon::createFromFormat('Y-m-d', $skpheader->periode_selesai)->format('Y');
+        $users = User::all()->pluck('name', 'id');
 
-        return view('skp.tahunan.target.index', compact('skpheader', 'skplines', 'tahun'));
+        return view('skp.tahunan.target.index', compact('skpheader', 'skplines', 'tahun', 'users'));
     }
 
     /**
@@ -43,8 +43,9 @@ class SkpTahunanTargetController extends Controller
         $satuankegiatan = SatuanKegiatan::get()->pluck('satuan_kegiatan', 'id');
         $skpheader = SkpTahunanHeader::findOrFail($id);
         $user = User::find($skpheader->user_id);
+        $users = User::all()->pluck('name', 'id');
 
-        return view('skp.tahunan.target.create', compact('satuankegiatan', 'id', 'user', 'skpheader'));
+        return view('skp.tahunan.target.create', compact('satuankegiatan', 'id', 'user', 'skpheader', 'users'));
     }
 
     /**
@@ -83,11 +84,12 @@ class SkpTahunanTargetController extends Controller
     public function show($id)
     {
         $skpheader = SkpTahunanHeader::find($id);
-        $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)->get();
+        $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)->paginate(10);
         $tahun = Carbon::createFromFormat('Y-m-d', $skpheader->periode_selesai)->format('Y');
         $user = User::find($skpheader->user_id);
+        $users = User::all()->pluck('name', 'id');
         
-        return view('skp.tahunan.target.index', compact('skpheader', 'skplines', 'tahun', 'id', 'user'));
+        return view('skp.tahunan.target.index', compact('skpheader', 'skplines', 'tahun', 'id', 'user', 'users'));
     }
 
     /**

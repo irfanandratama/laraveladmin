@@ -14,7 +14,12 @@
                           <strong class="card-title">User Administration</strong>
                       </div>
                       <div class="card-body">  
-   
+                        @if ($message = Session::get('flash_message'))
+                            <div class="alert alert-success alert-block">
+                            <button type="button" class="close" data-dismiss="alert">×</button>    
+                                <strong>{{ $message }}</strong>
+                            </div>
+                        @endif
                         <div class="table-responsive">
                             <table class="table table-bordered table-striped">
 
