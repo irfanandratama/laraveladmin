@@ -12,12 +12,12 @@
             <div class="row">
                 <div class="col-lg-3 col-xs-6">
                   <div class="rad-info-box rad-txt-success card">
-                    <i class="fa fa-windows"></i>
-                    <span class="heading">Microsoft</span>
-                    <span class="value"><span>4949</span></span>
+                    {{-- <i class="fa fa-windows"></i> --}}
+                    <span class="heading">Sistem Informasi SKP</span>
+                    <span class="value"><span></span></span>
                   </div>
                 </div>
-                <div class="col-lg-3 col-xs-6">
+                {{-- <div class="col-lg-3 col-xs-6">
                   <div class="rad-info-box rad-txt-primary card">
                     <i class="fa fa-facebook"></i>
                     <span class="heading">Facebook</span>
@@ -37,13 +37,13 @@
                     <span class="heading">Apple</span>
                     <span class="value"><span>10.9K</span></span>
                   </div>
-                </div>
+                </div> --}}
             </div>
              
           </div>
         </section>
         <!-- Header Section-->
-        <section class="dashboard-header section-padding">
+        {{-- <section class="dashboard-header section-padding">
           <div class="container">
             <div class="row d-flex align-items-md-stretch">
               
@@ -112,7 +112,7 @@
               </div>
             </div>
           </div>
-        </section>
+        </section> --}}
        
       </div>
 @endsection
