@@ -77,8 +77,9 @@ class TugasTambahanController extends Controller
         $skpheader = SkpTahunanHeader::find($id);
         $tugass = TugasTambahan::where('skp_tahunan_header_id', $id)->paginate(10);
         $user = User::find($skpheader->user_id);
+        $users = User::all()->pluck('name', 'id');
         
-        return view('skp.tahunan.tugas.index', compact('skpheader', 'tugass', 'id', 'user'));
+        return view('skp.tahunan.tugas.index', compact('skpheader', 'tugass', 'id', 'user', 'users'));
     }
 
     /**

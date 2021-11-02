@@ -90,6 +90,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('permissions', 'PermissionController');
 
     Route::resource('posts', 'PostController');
+
+	Route::resource('satker', 'SatuanKerjaController');
 });
 
 Route::resource('profile', 'ProfileController');

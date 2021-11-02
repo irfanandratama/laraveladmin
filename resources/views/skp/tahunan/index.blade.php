@@ -39,7 +39,8 @@
                                         <th>Periode SKP</th>
                                         <th>Nama Pegawai</th>
                                         <th>Aksi</th>
-                                        <th>Detil</th>
+                                        <th>Target & Realisasi</th>
+                                        <th>Tugas Tambahan & Kreativitas</th>
                                     </tr>
                                 </thead>
 
@@ -61,14 +62,16 @@
                                         </td>
                                         <td>
                                             @hasanyrole('Kepegawaian|Pegawai')
-                                            <a href="{{ route('target.show', $skp->id) }}" class="btn btn-success pull-left" style="margin-right: 3px;">Target</a>
+                                            <a href="{{ route('target.show', $skp->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Target</a>
                                             @endhasanyrole
                                             @hasanyrole('Kepegawaian')
-                                            <a href="{{ route('realisasi.show', $skp->id) }}" class="btn btn-success pull-left" style="margin-right: 3px;">Realisasi</a>
+                                            <a href="{{ route('realisasi.show', $skp->id) }}" class="btn btn-primary pull-left" style="margin-right: 3px;">Realisasi</a>
                                             @endhasanyrole
+                                        </td>
+                                        <td>
                                             @hasanyrole('Kepegawaian|Pegawai')
-                                            <a href="{{ route('tugas.show', $skp->id) }}" class="btn btn-success pull-left" style="margin-right: 3px;">Tugas Tambahan</a>
-                                            <a href="{{ route('kreativitas.show', $skp->id) }}" class="btn btn-success pull-left" style="margin-right: 3px;">Kreativitas</a>
+                                            <a href="{{ route('tugas.show', $skp->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Tugas Tambahan</a>
+                                            <a href="{{ route('kreativitas.show', $skp->id) }}" class="btn btn-primary pull-left" style="margin-right: 3px;">Kreativitas</a>
                                             @endhasanyrole
                                         </td>
                                     </tr>

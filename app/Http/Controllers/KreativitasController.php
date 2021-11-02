@@ -80,8 +80,9 @@ class KreativitasController extends Controller
         $kreatifs = Kreativitas::where('skp_tahunan_header_id', $id)->paginate(10);
         $user = User::find($skpheader->user_id);
         $satuan = SatuanKegiatan::all();
+        $users = User::all()->pluck('name', 'id');
         
-        return view('skp.tahunan.kreativitas.index', compact('skpheader', 'kreatifs', 'id', 'user', 'satuan'));
+        return view('skp.tahunan.kreativitas.index', compact('skpheader', 'kreatifs', 'id', 'user', 'satuan', 'users'));
     }
 
     /**

@@ -91,8 +91,8 @@
                     @endcan
                     @can('lihat user')
                       <li class="{{Request::is('users')? 'active' : null }}"><a href="{{ route('users.index') }}">Users List</a></li>
+                      <li class="{{Request::is('satker')? 'active' : null }}"><a href="{{ route('satker.index') }}">Satuan Kerja List</a></li>
                     @endcan
-              
                   </ul>
                 </li>
                 <li class=""><a href="#roleDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-user-secret" aria-hidden="true"></i>Role Permission</a>
@@ -112,6 +112,7 @@
           <h5 class="sidenav-heading">SKP menu</h5>
           <ul id="side-admin-menu" class="side-menu list-unstyled"> 
               <li class=""><a href="#skpDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-user-secret" aria-hidden="true"></i>Sasaran Kerja Pegawai</a>
+                {{-- <div class="btn-group"></div> --}}
                 <ul id="skpDropdown" class="collapse list-unstyled ">
                   <li class="{{Request::is('skp/tahunan')? 'active' : null }}"><a href="{{ route('tahunan.index') }}">SKP Tahunan</a></li>
                   {{-- <li class="{{Request::is('skp/bulanan')? 'active' : null }}"><a href="{{ route('bulanan.index') }}">SKP Bulanan</a></li> --}}
