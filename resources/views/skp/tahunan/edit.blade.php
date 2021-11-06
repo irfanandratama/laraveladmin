@@ -50,9 +50,11 @@
                                 </div>
                             @endhasanyrole
                             
-        
-                            {{ Form::submit('Update', array('class' => 'btn btn-primary')) }}
-        
+                            <div class="row form-group">
+                                {{ Form::submit('Update', array('class' => 'btn btn-primary')) }}
+                                <a href="{{ route('tahunan.index') }}" class="btn btn-default pull-left" style="margin-right: 3px;">Cancel</a>
+                            </div>
+
                         {{ Form::close() }}
 
                       </div>

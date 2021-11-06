@@ -9,15 +9,12 @@
           <div class="container-fluid">
             <div class="row">
                <div class="offset-md-1 col-lg-10">
-                   <div class="form-group"><a href="{{ route('tahunan.index') }}" class="btn btn-default pull-left" style="margin-right: 3px;">Back</a></div><br><br>
-                   @include('skp.tahunan.detail')
                   <div class="card">
                       <div class="card-header">
-                          <h1><i class="fa fa-key"></i> Target SKP Tahunan
-                            <a href="{{ URL::to('skp/tahunan/target/'.$id.'/create') }}" class="btn btn-default pull-right">Add Target SKP Tahunan</a>
+                          <h1><i class="fa fa-key"></i> SKP Tahunan
                          </h1>
                       </div>
-                      <div class="card-body">  
+                      <div class="card-body">
                         @if ($message = Session::get('flash_message'))
                             <div class="alert alert-success alert-block">
                             <button type="button" class="close" data-dismiss="alert">×</button>    
@@ -38,46 +35,33 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Tahun</th>
-                                        <th>Kegiatan Tahunan</th>
-                                        <th>Target Kuantitas</th>
-                                        <th>Target Kualitas</th>
-                                        <th>Target Waktu</th>
-                                        <th>Biaya</th>
-                                        <th>Aksi</th>
+                                        <th>Nama Pegawai</th>
+                                        <th>Periode SKP</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    @forelse ($skplines as $index => $skpline)
+                                    @forelse ($skps as $index => $skp)
                                     <tr>
 
                                         <td>{{ $index + 1 }}</td>
-                                        <td>{{ $tahun }}</td>
-                                        <td>{{ $skpline->kegiatan }}</td>{{-- Retrieve array of permissions associated to a role and convert to string --}}
-                                        <td>{{ $skpline->kuantitas_target }}</td>
-                                        <td>{{ $skpline->kualitas_target }}</td>
-                                        <td>{{ $skpline->waktu_target }}</td>
-                                        <td>{{ $skpline->biaya_target }}</td>
-                                        <td>
-                                            <a href="{{ route('target.edit', $skpline->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Edit</a>
 
-                                            {!! Form::open(['method' => 'DELETE', 'route' => ['target.destroy', $skpline->id], 'onsubmit' => 'return confirm("Yakin menghapus data ini?")' ]) !!}
-                                            {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
-                                            {!! Form::close() !!}
+                                        <td>{{ $skp->name }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($skp->periode_mulai)->format('d M Y') . ' - ' . \Carbon\Carbon::parse($skp->periode_selesai)->format('d M Y') }}</td>
+                                        <td class="text-center align-middle">
+                                            <a href="{{ route('penilaian.show', $skp->id) }}" class="btn btn-info" style="margin-right: 3px; align-self: center;">Penilaian Perilaku</a>
                                         </td>
                                     </tr>
                                     @empty
                                         <tbody>
                                             <tr>
-                                                <td colSpan="8" style="text-align: center">Data Not Found</td>
+                                                <td colSpan="5" style="text-align: center">Data Not Found</td>
                                             </tr>
                                         </tbody>
                                     @endforelse
                                 </tbody>
-
                             </table>
-                            {{ $skplines->links() }}
                         </div>   
                      </div>
                   </div>
@@ -86,4 +70,4 @@
        </div>
   </div>
 
-@endsection
+@endsection('content')

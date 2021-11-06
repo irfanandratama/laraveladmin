@@ -45,7 +45,7 @@
           <div class="sidenav-header-logo"><a href="index.html" class="brand-small text-center"> <img src="{{URL::asset('img/default-user.png')}}" class="img-thumbnail"></a></div>
         </div>
         <!-- Sidebar Navigation Menus-->
-        {{-- <div class="main-menu" id="sidebar-menu">
+        <div class="main-menu" id="sidebar-menu">
           <h5 class="sidenav-heading">Main</h5>
           <ul id="side-main-menu" class="side-menu list-unstyled">                  
             <li class="{{Request::is('/')? 'active' : null }}"><a href="{{url('/')}}"> <i class="fa fa-tachometer"></i>Home</a></li>
@@ -78,7 +78,7 @@
            
     
           </ul>
-        </div> --}}
+        </div>
         
         @role('Administrator')
           <div class="admin-menu">
@@ -115,7 +115,7 @@
                 {{-- <div class="btn-group"></div> --}}
                 <ul id="skpDropdown" class="collapse list-unstyled ">
                   <li class="{{Request::is('skp/tahunan')? 'active' : null }}"><a href="{{ route('tahunan.index') }}">SKP Tahunan</a></li>
-                  {{-- <li class="{{Request::is('skp/bulanan')? 'active' : null }}"><a href="{{ route('bulanan.index') }}">SKP Bulanan</a></li> --}}
+                  <li class="{{Request::is('skp/penilaian')? 'active' : null }}"><a href="{{ route('penilaian.index') }}">Penilaian Perilaku</a></li>
                 </ul>
               </li>
           </ul>
@@ -230,5 +230,7 @@
     <!-- Main File-->
     <script src="{{ asset('js/front.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
+
+    @yield('script')
   </body>
 </html>

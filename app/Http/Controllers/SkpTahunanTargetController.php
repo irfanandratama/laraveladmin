@@ -130,8 +130,47 @@ class SkpTahunanTargetController extends Controller
             $this->messages()
             
         );
+
+        if ($skp->perhitungan) {
+            $kuantitas_total = ($skp->kuantitas_realisasi/ $request->kuantitas_target) * 100;
+            $kualitas_total = ($skp->kualitas_realisasi / $request->kualitas_target) * 100;
+            $persen_waktu = 100 - ($skp->waktu_realisasi / $request->waktu_target * 100);
+            $persen_biaya = $request->biaya_target === 0 || $skp->biaya_realisasi === 0 ? 
+                0 : 100 - ($skp->biaya_realisasi / $request->biaya_target * 100);
+
+            $nilai_waktu = 0;
+            if ($persen_waktu > 24) {
+                $nilai_waktu = (76 - ((((1.76 * $request->waktu_target - $skp->waktu_realisasi) / $request->waktu_target) * 100) - 100));
+            } else {
+                $nilai_waktu = ((( 1.76 * $request->waktu_target - $skp->waktu_realisasi) / $request->waktu_target ) * 100);
+            }
+
+            $nilai_biaya = 0;
+            if ($persen_biaya > 24) {
+                $nilai_biaya = (76 - ((((1.76 * $request->biaya_target - $skp->biaya_realisasi) / $request->biaya_target) * 100) - 100));
+            } else {
+                $nilai_biaya = $request->biaya_target === 0 || $skp->biaya_realisasi === 0 ? 
+                    0 : ((( (1.76 * $request->biaya_target) - $skp->biaya_realisasi) / $request->biaya_target ) * 100);
+            }
+
+            $total_hitung = $kuantitas_total + $kualitas_total + $nilai_waktu + $nilai_biaya;
+
+            $nilai_capaian = 0;
+
+            if ($request->biaya_realisasi < 1) {
+                $nilai_capaian = $total_hitung / 3;
+            } else {
+                $nilai_capaian = $total_hitung / 4;
+            }
+
+            $request->merge(['perhitungan' => $total_hitung ]);
+            $request->merge(['nilai_capaian' => $nilai_capaian ]);
+        }
+
         $input = $request->only('kegiatan', 'kuantitas_target', 'satuan_kegiatan_id', 'kualitas_target',
-        'angka_kredit_target', 'waktu_target', 'biaya_target', 'skp_tahunan_header_id');
+        'angka_kredit_target', 'waktu_target', 'biaya_target', 'skp_tahunan_header_id', 'perhitungan', 'nilai_capaian');
+
+        
         $skp->fill($input)->save();
 
         return redirect()->route('target.show', [$request->skp_tahunan_header_id])

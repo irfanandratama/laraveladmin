@@ -9,6 +9,7 @@
           <div class="container-fluid">
             <div class="row">
                <div class="offset-md-1 col-lg-10">
+                <div class="form-group"><a href="{{ route('tahunan.index') }}" class="btn btn-default pull-left" style="margin-right: 3px;">Back</a></div><br><br>
                 @include('skp.tahunan.detail')
                   <div class="card">
                       <div class="card-header">

@@ -31,4 +31,8 @@ class SkpTahunanHeader extends Model
         return $this->hasMany(Kreativitas::class);
     }
 
+    public function penilaian_perilaku() {
+        return $this->hasMany(PenilaianPerilaku::class);
+    }
+
 }

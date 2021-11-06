@@ -68,6 +68,11 @@
                             {{ Form::text('no_sk', null, array('class' => 'form-control')) }}
                         </div>
 
+                        <div class="form-group">
+                            {{ Form::label('nilai_tambah', 'Nilai (Setiap tugas tambahan bernilai 1)') }}
+                            {{ Form::text('nilai_tambah', 1, array('class' => 'form-control', 'disabled')) }}
+                        </div>
+
                         {{ Form::hidden('skp_tahunan_header_id', $skpheader->id)}}
 
                         {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}

@@ -33,8 +33,10 @@
                         </div>
                     @endhasanyrole
                     
-
-                    {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}
+                    <div class="row form-group">
+                        {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}
+                        <button class="btn btn-default" style="margin-right: 3px;" data-dismiss="modal">Cancel</button>
+                    </div>
 
                 {{ Form::close() }}
             </div>

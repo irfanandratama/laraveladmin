@@ -113,6 +113,8 @@ Route::group(['prefix'=>'skp'], function(){
 		Route::get('/kreativitas/{id}/create', 'KreativitasController@create');
 		Route::resource('/kreativitas', 'KreativitasController');
 	});
+
+	Route::resource('/penilaian', 'PenilaianPerilakuController');
 });
 
 

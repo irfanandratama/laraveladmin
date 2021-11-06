@@ -164,32 +164,32 @@ class SkpTahunanRealisasiController extends Controller
             
         );
 
-        $kuantitas_total = ($skp->kuantitas_target / $request->kuantitas_realisasi) * 100;
-        $kualitas_total = ($skp->kualitas_target / $request->kualitas_realisasi) * 100;
-        $persen_waktu = 100 - ($skp->waktu_target / $request->waktu_realisasi * 100);
+        $kuantitas_total = ($request->kuantitas_realisasi/ $skp->kuantitas_target) * 100;
+        $kualitas_total = ($request->kualitas_realisasi / $skp->kualitas_target) * 100;
+        $persen_waktu = 100 - ($request->waktu_realisasi / $skp->waktu_target * 100);
         $persen_biaya = $skp->biaya_target === 0 || $request->biaya_realisasi === 0 ? 
-            0 : 100 - ($skp->biaya_target / $request->biaya_realisasi * 100);
+            0 : 100 - ($request->biaya_realisasi / $skp->biaya_target * 100);
 
         $nilai_waktu = 0;
         if ($persen_waktu > 24) {
-            $nilai_waktu = 76 - ((((1.76 * $skp->waktu_target - $request->waktu_realisasi) / $skp->waktu_target) * 100) - 100);
+            $nilai_waktu = (76 - ((((1.76 * $skp->waktu_target - $request->waktu_realisasi) / $skp->waktu_target) * 100) - 100));
         } else {
-            $nilai_waktu = (( 1.76 * $skp->waktu_target - $request->waktu_realisasi) / $skp->waktu_target ) * 100;
+            $nilai_waktu = ((( 1.76 * $skp->waktu_target - $request->waktu_realisasi) / $skp->waktu_target ) * 100);
         }
 
         $nilai_biaya = 0;
         if ($persen_biaya > 24) {
-            $nilai_biaya = 76 - ((((1.76 * $skp->biaya_target - $request->biaya_realisasi) / $skp->biaya_target) * 100) - 100);
+            $nilai_biaya = (76 - ((((1.76 * $skp->biaya_target - $request->biaya_realisasi) / $skp->biaya_target) * 100) - 100));
         } else {
-            $nilai_waktu = $skp->biaya_target === 0 || $request->biaya_realisasi === 0 ? 
-                0 : (( 1.76 * $skp->biaya_target - $request->biaya_realisasi) / $skp->biaya_target ) * 100;
+            $nilai_biaya = $skp->biaya_target === 0 || $request->biaya_realisasi === 0 ? 
+                0 : ((( (1.76 * $skp->biaya_target) - $request->biaya_realisasi) / $skp->biaya_target ) * 100);
         }
 
         $total_hitung = $kuantitas_total + $kualitas_total + $nilai_waktu + $nilai_biaya;
 
         $nilai_capaian = 0;
 
-        if ($request->biaya_realisasi === 0) {
+        if ($request->biaya_realisasi < 1) {
             $nilai_capaian = $total_hitung / 3;
         } else {
             $nilai_capaian = $total_hitung / 4;
@@ -204,7 +204,7 @@ class SkpTahunanRealisasiController extends Controller
 
         return redirect()->route('realisasi.show', [$request->skp_tahunan_header_id])
             ->with('flash_message',
-            'Kegiatan SKP Tahunan successfully updated.');
+            'Kegiatan SKP Tahunan successfully updated.' );
     }
 
     /**
