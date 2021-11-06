@@ -45,7 +45,7 @@
           <div class="sidenav-header-logo"><a href="index.html" class="brand-small text-center"> <img src="{{URL::asset('img/default-user.png')}}" class="img-thumbnail"></a></div>
         </div>
         <!-- Sidebar Navigation Menus-->
-        <div class="main-menu" id="sidebar-menu">
+        {{-- <div class="main-menu" id="sidebar-menu">
           <h5 class="sidenav-heading">Main</h5>
           <ul id="side-main-menu" class="side-menu list-unstyled">                  
             <li class="{{Request::is('/')? 'active' : null }}"><a href="{{url('/')}}"> <i class="fa fa-tachometer"></i>Home</a></li>
@@ -78,7 +78,7 @@
            
     
           </ul>
-        </div>
+        </div> --}}
         
         @role('Administrator')
           <div class="admin-menu">
