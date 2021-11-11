@@ -87,8 +87,12 @@
 
                         {{ Form::hidden('skp_tahunan_header_id', $skpline->skp_tahunan_header_id)}}
 
-                        {{ Form::submit('Update', array('class' => 'btn btn-primary')) }}
+                        <div class="row">
+                            {{ Form::submit('Update', array('class' => 'btn btn-primary')) }}
+                            <a href="{{ route('target.show', $skpheader->id) }}" class="btn btn-default pull-left" style="margin-right: 3px;">Cancel</a>
 
+                        </div>
+                        
                         {{ Form::close() }}
                     </div>
                   </div>

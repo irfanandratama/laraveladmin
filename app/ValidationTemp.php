@@ -4,13 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SkpTahunanLines extends Model
+class ValidationTemp extends Model
 {
-    protected $table = 'skp_tahunan_lines';
+    protected $table = 'validation_temp';
 
     public $timestamps = true;
 
     protected $fillable = [
+        'periode_mulai', 'periode_selesai', 'user_id',
         'skp_tahunan_header_id', 
         'kegiatan', 
         'kuantitas_target',
@@ -26,19 +27,11 @@ class SkpTahunanLines extends Model
         'angka_kredit_realisasi',
         'perhitungan',
         'nilai_capaian',
-        'status'
+        'tahun', 'nama_tugas', 'no_sk',
+        'tanggal_kreativitas', 'kegiatan_kreativitas', 'kuantitas',
+        'orientasi_pelayanan', 'integritas', 'komitmen', 'disiplin',
+        'kerjasama', 'kepemimpinan', 'jumlah', 'rata_rata',
+        'old_id',
+        'table_name'
     ];
-
-    public function skp_tahunan_header() {
-        return $this->hasOne(SkpTahunanHeader::class);
-    }
-    
-    public function satuan_kegiatan() {
-        return $this->hasOne(SatuanKegiatan::class);
-    }
-
-    public function status()
-    {
-        return $this->hasOne(Status::class);
-    }
 }

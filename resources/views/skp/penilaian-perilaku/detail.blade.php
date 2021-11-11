@@ -12,7 +12,11 @@
                 @include('skp.tahunan.detail')
                   <div class="card">
                       <div class="card-header">
-                          <strong class="card-title"> <h1><i class='fa fa-user-plus'></i> Penilaian Perilaku</h1></strong>
+                          <strong class="card-title"> <h1><i class='fa fa-user-plus'></i> Penilaian Perilaku
+                            @if ($penilaian)
+                                <a href="{{ URL::to('skp/penilaian/export/'.$id.'') }}" class="btn btn-default pull-right">Cetak Form Penilaian Perilaku</a>
+                            @endif
+                        </h1></strong>
                       </div>
                       <div class="card-body">  
                         @if ($errors->any())

@@ -38,6 +38,7 @@
                                         <th>No</th>
                                         <th>Periode SKP</th>
                                         <th>Nama Pegawai</th>
+                                        <th>Status</th>
                                         <th>Aksi</th>
                                         <th>Target & Realisasi</th>
                                         <th>Tugas Tambahan & Kreativitas</th>
@@ -49,36 +50,51 @@
                                     <tr>
 
                                         <td>{{ $index + 1 }}</td>
-
                                         <td>{{ $skp->name }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($skp->periode_mulai)->format('d M Y') . ' - ' . \Carbon\Carbon::parse($skp->periode_selesai)->format('d M Y') }}</td>{{-- Retrieve array of permissions associated to a role and convert to string --}}
-                                        <td>
-                                            <a href="{{ route('tahunan.edit', $skp->id) }}"  style="margin-right: 3px;"><i class='fa fa-edit'></i></a>
-                                            {{-- <a href="#" data-id="{{$skp->id}}" data-toggle="modal"  class="btn btn-info pull-left editModalBtn" style="margin-right: 3px;">Edit</a> --}}
+                                        <td>{{ \Carbon\Carbon::parse($skp->periode_mulai)->format('d M Y') . ' - ' . \Carbon\Carbon::parse($skp->periode_selesai)->format('d M Y') }}</td>
+                                        <td>{{ $skp->keterangan }}</td>
+                                        <td style="text-align: center">
+                                            @if (strpos(strtolower($skp->keterangan), 'diterima') !== false || strpos(strtolower($skp->keterangan), 'disetujui') !== false || strpos(strtolower($skp->keterangan), 'ditolak') !== false && $skp->status !== '03')
+                                                <a href="{{ route('tahunan.edit', $skp->id) }}"  style="margin-right: 3px;"><i class='fa fa-edit'></i></a>
 
-                                            {!! Form::open(['method' => 'DELETE', 'route' => ['tahunan.destroy', $skp->id], 'onsubmit' => 'return confirm("Yakin menghapus data ini ('. $skp->name . ' periode '.\Carbon\Carbon::parse($skp->periode_mulai)->format('d M Y') . ' - ' . \Carbon\Carbon::parse($skp->periode_selesai)->format('d M Y').')? Hal ini juga akan menghapus seluruh target dan realisasi dari SKP yang berkaitan.")' ]) !!}
-                                            {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn-danger']) !!}
-                                            {!! Form::close() !!}
+                                                {!! Form::open(['method' => 'DELETE', 'route' => ['tahunan.destroy', $skp->id], 'onsubmit' => 'return confirm("Yakin menghapus data ini ('. $skp->name . ' periode '.\Carbon\Carbon::parse($skp->periode_mulai)->format('d M Y') . ' - ' . \Carbon\Carbon::parse($skp->periode_selesai)->format('d M Y').')? Hal ini juga akan menghapus seluruh target dan realisasi dari SKP yang berkaitan.")' ]) !!}
+                                                {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn-danger']) !!}
+                                                {!! Form::close() !!}
+                                            @endif
+                                            
+                                            @if (strpos(strtolower($skp->keterangan), 'pengajuan') !== false)
+                                                @hasanyrole('Kepegawaian')
+                                                    <a href="{{ route('tahunan.validate_data', $skp->id) }}" class="btn btn-primary pull-left" style="margin-right: 3px;">Validasi</a>
+                                                @endhasanyrole
+                                            @endif
+                                            
                                         </td>
                                         <td>
-                                            @hasanyrole('Kepegawaian|Pegawai')
-                                            <a href="{{ route('target.show', $skp->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Target</a>
-                                            @endhasanyrole
-                                            @hasanyrole('Kepegawaian')
-                                            <a href="{{ route('realisasi.show', $skp->id) }}" class="btn btn-primary pull-left" style="margin-right: 3px;">Realisasi</a>
-                                            @endhasanyrole
+                                            @if (strpos(strtolower($skp->keterangan), 'diterima') !== false || strpos(strtolower($skp->keterangan), 'disetujui') !== false || strpos(strtolower($skp->keterangan), 'ditolak') !== false && $skp->status !== '03')
+                                                @hasanyrole('Kepegawaian|Pegawai')
+                                                <a href="{{ route('target.show', $skp->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Target</a>
+                                                @endhasanyrole
+                                                @hasanyrole('Kepegawaian')
+                                                <a href="{{ route('realisasi.show', $skp->id) }}" class="btn btn-primary pull-left" style="margin-right: 3px;">Realisasi</a>
+                                                @endhasanyrole
+                                            @endif
+                                            
                                         </td>
                                         <td>
-                                            @hasanyrole('Kepegawaian|Pegawai')
-                                            <a href="{{ route('tugas.show', $skp->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Tugas Tambahan</a>
-                                            <a href="{{ route('kreativitas.show', $skp->id) }}" class="btn btn-primary pull-left" style="margin-right: 3px;">Kreativitas</a>
-                                            @endhasanyrole
+                                            @if (strpos(strtolower($skp->keterangan), 'diterima') !== false || strpos(strtolower($skp->keterangan), 'disetujui') !== false || strpos(strtolower($skp->keterangan), 'ditolak') !== false && $skp->status !== '03')
+                                                @hasanyrole('Kepegawaian|Pegawai')
+                                                <a href="{{ route('tugas.show', $skp->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Tugas Tambahan</a>
+                                                <a href="{{ route('kreativitas.show', $skp->id) }}" class="btn btn-primary pull-left" style="margin-right: 3px;">Kreativitas</a>
+                                                @endhasanyrole
+                                            @endif
+                                           
                                         </td>
+                                        {{-- <a href="{{ route('tahunan.export', $skp->id) }}" class="btn btn-primary pull-left" style="margin-right: 3px;">Cetak</a> --}}
                                     </tr>
                                     @empty
                                         <tbody>
                                             <tr>
-                                                <td colSpan="5" style="text-align: center">Data Not Found</td>
+                                                <td colSpan="7" style="text-align: center">Data Not Found</td>
                                             </tr>
                                         </tbody>
                                     @endforelse

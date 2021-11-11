@@ -17,4 +17,8 @@ class SatuanKegiatan extends Model
     public function skp_tahunan_lines() {
         return $this->hasMany(SkpTahunanLines::class);
     }
+
+    public function kreativitas() {
+        return $this->hasMany(Kreativitas::class);
+    }
 }

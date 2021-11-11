@@ -47,11 +47,11 @@ class User extends Authenticatable
     }
 
     public function pangkat() {
-        return $this->hasOne(Pangkat::class);
+        return $this->belongsTo(Pangkat::class);
     }
 
     public function satuan_kerja() {
-        return $this->hasOne(SatuanKerja::class);
+        return $this->belongsTo(SatuanKerja::class);
     }
 
     public function skp_tahunan_header() {

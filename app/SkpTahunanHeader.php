@@ -11,7 +11,7 @@ class SkpTahunanHeader extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'periode_mulai', 'periode_selesai', 'user_id'
+        'periode_mulai', 'periode_selesai', 'user_id', 'status'
     ];
 
     public function skp_tahunan_lines() {
@@ -33,6 +33,11 @@ class SkpTahunanHeader extends Model
 
     public function penilaian_perilaku() {
         return $this->hasMany(PenilaianPerilaku::class);
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
     }
 
 }

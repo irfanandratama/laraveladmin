@@ -70,7 +70,6 @@
                                 <div class="col=lg-6 col-md-6">
                                     {{ Form::label('kuantitas_realisasi', 'Realisasi Kuantitas') }}
                                     {{ Form::number('kuantitas_realisasi', null, array('class' => 'form-control')) }}
-                                    {{ Form::hidden('kualitas_realisasi', 100) }}
                                 </div>
                             </div>
                         </div>

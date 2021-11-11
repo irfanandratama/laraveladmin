@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
                 PangkatSeeder::class,
                 SatuanKerjaSeeder::class,
                 SatuanKegiatanSeeder::class,
+                StatusSeeder::class,
                 UsersTableSeeder::class, 
                 PermissionsSeeder::class,
             ]);

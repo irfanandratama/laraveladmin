@@ -11,10 +11,14 @@ class TugasTambahan extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'tahun', 'nama_tugas', 'no_sk', 'skp_tahunan_header_id'
+        'tahun', 'nama_tugas', 'no_sk', 'skp_tahunan_header_id', 'status'
     ];
 
     public function skp_tahunan_header() {
         return $this->hasOne(SkpTahunanHeader::class);
+    }
+
+    public function status() {
+        return $this->hasOne(Status::class);
     }
 }

@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\SkpTahunanHeader;
+use App\SkpTahunanLines;
 use App\PenilaianPerilaku;
 use App\SatuanKegiatan;
+use App\TugasTambahan;
+use App\Kreativitas;
 use App\User;
 
 use Illuminate\Http\Request;
@@ -165,5 +168,35 @@ class PenilaianPerilakuController extends Controller
             'jumlah.required'=> 'Mohon isi kolom Jumlah',
             'rata-rata.required'=> 'Mohon isi kolom Rata-rata',
         ];
+    }
+
+    public function export($id)
+    {
+        $skpheader = SkpTahunanHeader::find($id);
+        $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)->get();
+        $satuan = SatuanKegiatan::all();
+        $user = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $skpheader->user_id)->first();
+        $user_atasan = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $user->atasan_1_id)->first();
+        $penilaian = PenilaianPerilaku::where('skp_tahunan_header_id', $id)->first();
+        $tugass = TugasTambahan::where('skp_tahunan_header_id', $id)->get();
+        $kreativitas = Kreativitas::where('skp_tahunan_header_id', $id)->get();
+
+        $nilai_capaian = $skplines->sum('nilai_capaian');
+        $count_lines = count($skplines);
+        $count_tugas = count($tugass);
+        $count_kreativitas = count($kreativitas);
+        $total_nilai = $nilai_capaian / $count_lines + $count_tugas + $count_kreativitas;
+
+        $pdf = \PDF::loadView('exports.penilaian-perilaku-pdf', compact(
+            'skpheader',
+            'skplines',
+            'satuan',
+            'user',
+            'user_atasan',
+            'total_nilai',
+            'penilaian'
+        ));
+        // return $pdf->stream();
+        return $pdf->download('PERILAKU KERJA.pdf');
     }
 }

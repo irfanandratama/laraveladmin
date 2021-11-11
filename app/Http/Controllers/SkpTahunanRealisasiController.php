@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\SkpTahunanHeader;
 use App\SkpTahunanLines;
+use App\SkpTahunanHeader;
 use App\SatuanKegiatan;
+use App\TugasTambahan;
+use App\Kreativitas;
 use App\User;
+use App\ValidationTemp;
+use App\Status;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -98,10 +102,20 @@ class SkpTahunanRealisasiController extends Controller
 
         $request->merge(['perhitungan' => $total_hitung ]);
         $request->merge(['nilai_capaian' => $nilai_capaian ]);
+        $request->merge(['status' => '01' ]);
+        $request->merge(['old_id' => $skp->id ]);
+        $request->merge(['table_name' => 'skp_tahunan_lines_realisasi' ]);
 
-        $input = $request->only('kegiatan', 'kuantitas_realisasi', 'satuan_kegiatan_id', 'kualitas_realisasi',
-        'angka_kredit_realisasi', 'waktu_realisasi', 'biaya_realisasi', 'skp_tahunan_header_id', 'perhitungan', 'nilai_capaian');
-        $skp->fill($input)->save();
+        // $input = $request->only('kegiatan', 'kuantitas_realisasi', 'satuan_kegiatan_id', 'kualitas_realisasi',
+        // 'angka_kredit_realisasi', 'waktu_realisasi', 'biaya_realisasi', 'skp_tahunan_header_id', 'perhitungan', 'nilai_capaian',
+        // 'status');
+
+        ValidationTemp::create($request->only('kegiatan', 'kuantitas_realisasi', 'satuan_kegiatan_id', 'kualitas_realisasi',
+        'angka_kredit_realisasi', 'waktu_realisasi', 'biaya_realisasi', 'skp_tahunan_header_id', 'perhitungan', 'nilai_capaian',
+        'old_id', 'table_name'));
+        $skp->status = '01';
+        $skp->save();
+        // $skp->fill($input)->save();
 
         return redirect()->route('realisasi.show', [$request->skp_tahunan_header_id])
             ->with('flash_message',
@@ -117,10 +131,19 @@ class SkpTahunanRealisasiController extends Controller
     public function show($id)
     {
         $skpheader = SkpTahunanHeader::find($id);
-        $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)->paginate(10);
+        $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)
+        ->whereIn('status', ['01', '02', '04', '05', '06', '07', '08', '09'])
+        ->paginate(10);
         $tahun = Carbon::createFromFormat('Y-m-d', $skpheader->periode_selesai)->format('Y');
         $user = User::find($skpheader->user_id);
         $users = User::all()->pluck('name', 'id');
+
+        $skplines->map(function ($skp) {
+            $status = Status::where('status', $skp->status)->first();
+            if ($status) {
+                $skp['keterangan'] = $status->keterangan;
+            } 
+        });
         
         return view('skp.tahunan.realisasi.index', compact('skpheader', 'skplines', 'tahun', 'id', 'user', 'users'));
     }
@@ -198,13 +221,23 @@ class SkpTahunanRealisasiController extends Controller
         $request->merge(['perhitungan' => $total_hitung ]);
         $request->merge(['nilai_capaian' => $nilai_capaian ]);
 
-        $input = $request->only('kegiatan', 'kuantitas_realisasi', 'satuan_kegiatan_id', 'kualitas_realisasi',
-        'angka_kredit_realisasi', 'waktu_realisasi', 'biaya_realisasi', 'skp_tahunan_header_id', 'perhitungan', 'nilai_capaian');
-        $skp->fill($input)->save();
+        $request->merge(['old_id' => $skp->id ]);
+        $request->merge(['table_name' => 'skp_tahunan_lines_realisasi' ]);
+
+        // $input = $request->only('kegiatan', 'kuantitas_realisasi', 'satuan_kegiatan_id', 'kualitas_realisasi',
+        // 'angka_kredit_realisasi', 'waktu_realisasi', 'biaya_realisasi', 'skp_tahunan_header_id', 'perhitungan', 'nilai_capaian',
+        // 'old_id', 'table_name');
+
+        ValidationTemp::create($request->only('kegiatan', 'kuantitas_realisasi', 'satuan_kegiatan_id', 'kualitas_realisasi',
+        'angka_kredit_realisasi', 'waktu_realisasi', 'biaya_realisasi', 'skp_tahunan_header_id', 'perhitungan', 'nilai_capaian',
+        'old_id', 'table_name'));
+
+        $skp->status = '04';
+        $skp->save();
 
         return redirect()->route('realisasi.show', [$request->skp_tahunan_header_id])
             ->with('flash_message',
-            'Kegiatan SKP Tahunan successfully updated.' );
+            'Berhasil mengajukan perubahan data realisasi SKP tahunan.' );
     }
 
     /**
@@ -216,17 +249,34 @@ class SkpTahunanRealisasiController extends Controller
     public function destroy($id)
     {
         $skp = SkpTahunanLines::findOrFail($id);
+        $skp->status = '07';
+        $skp->save();
 
-        $skp->kuantitas_realisasi = null;
-        $skp->kualitas_realisasi = null;
-        $skp->waktu_realisasi = null;
-        $skp->biaya_realisasi = null;
-        $skp->angka_kredit_realisasi = null;
-        $skp->perhitungan = null;
-        $skp->nilai_capaian = null;
+        // $skp->kuantitas_realisasi = null;
+        // $skp->kualitas_realisasi = null;
+        // $skp->waktu_realisasi = null;
+        // $skp->biaya_realisasi = null;
+        // $skp->angka_kredit_realisasi = null;
+        // $skp->perhitungan = null;
+        // $skp->nilai_capaian = null;
         $skpheaderid = $skp->skp_tahunan_header_id;
 
-        $skp->save();
+        $request = new Request();
+        $request->merge(['kuantitas_realisasi' => $skp->kuantitas_target ]);
+        $request->merge(['satuan_kegiatan_id' => $skp->satuan_kegiatan_id ]);
+        $request->merge(['kualitas_realisasi' => $skp->kualitas_target ]);
+        $request->merge(['angka_kredit_realisasi' => $skp->angka_kredit_target ]);
+        $request->merge(['waktu_realisasi' => $skp->waktu_target ]);
+        $request->merge(['biaya_realisasi' => $skp->biaya_target ]);
+        $request->merge(['skp_tahunan_header_id' => $skp->skp_tahunan_header_id ]);
+        $request->merge(['perhitungan' => $skp->perhitungan ]);
+        $request->merge(['nilai_capaian' => $skp->nilai_capaian ]);
+        $request->merge(['old_id' => $skp->id ]);
+        $request->merge(['table_name' => 'skp_tahunan_lines_realisasi' ]);
+
+        ValidationTemp::create($request->only('kegiatan', 'kuantitas_realisasi', 'satuan_kegiatan_id', 'kualitas_realisasi',
+        'angka_kredit_realisasi', 'waktu_realisasi', 'biaya_realisasi', 'skp_tahunan_header_id', 'perhitungan', 'nilai_capaian',
+        'old_id', 'table_name'));
 
         return redirect()->route('realisasi.show', [$skpheaderid])
             ->with('flash_message',
@@ -247,5 +297,176 @@ class SkpTahunanRealisasiController extends Controller
             'biaya_target.required'=> 'Mohon isi kolom Target Biaya',
             'biaya_target.numeric'=> 'Mohon mengisi kolom Target Biaya dengan angka'        
         ];
+    }
+
+    public function export($id)
+    {
+        // return Excel::download(new SkpTahunanTargetExport($id), 'FORM SKP.xlsx');
+        // $id = $this->id;
+        $skpheader = SkpTahunanHeader::find($id);
+        $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)->get();
+        $satuan = SatuanKegiatan::all();
+        $user = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $skpheader->user_id)->first();
+        $user_atasan = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $user->atasan_1_id)->first();
+        $tugass = TugasTambahan::where('skp_tahunan_header_id', $id)->get();
+        $kreativitas = Kreativitas::where('skp_tahunan_header_id', $id)->get();
+
+        $nilai_capaian = $skplines->sum('nilai_capaian');
+        $count_lines = count($skplines);
+        $count_tugas = count($tugass);
+        $count_kreativitas = count($kreativitas);
+
+        $total_nilai = $nilai_capaian / $count_lines + $count_tugas + $count_kreativitas;
+        $capaian = (
+            ($total_nilai <= 50) ? "Buruk" :
+             (($total_nilai <= 60 && $total_nilai > 50) ? "Sedang" :
+              (($total_nilai <= 75 && $total_nilai > 60) ? "Cukup" :
+               (($total_nilai <= 90 && $total_nilai > 75) ? "Baik" : "Sangat Baik")))
+            );
+        // $capaian = (($total_nilai <= 50) ? 'Buruk' : ($total_nilai <= 60 && $total_nilai > 50) ? 'Sedang' : ($total_nilai <= 75 && $total_nilai > 60) ? 'Cukup' : ($total_nilai <= 90 && $total_nilai > 75) ? 'Baik' : 'Sangat Baik');
+
+        $satker = \explode(' ', $user->satuan_kerja->satuan_kerja);
+        $lokasi = array_pop($satker);
+        $pdf = \PDF::loadView('exports.penilaian-capaian-pdf', compact(
+            'skpheader',
+            'skplines',
+            'satuan',
+            'user',
+            'user_atasan',
+            'tugass',
+            'kreativitas',
+            'total_nilai',
+            'capaian',
+            'lokasi'
+        ));
+        // return $pdf->stream();
+        return $pdf->download('PENGUKURAN.pdf');
+    }
+
+    public function validate_data($id)
+    {
+        $skpline = SkpTahunanLines::findOrFail($id);
+        $skpheader = SkpTahunanHeader::find($skpline->skp_tahunan_header_id);
+        $user = User::find($skpheader->user_id);
+        $satuankegiatan = SatuanKegiatan::get()->pluck('satuan_kegiatan', 'id');
+
+        $validation_temp = ValidationTemp::where('old_id', $id)->where('table_name', 'skp_tahunan_lines_target')->first();
+            
+        $users = User::all()->pluck('name', 'id');
+
+        return view('skp.tahunan.realisasi.validation', compact('skpheader', 'skpline', 'user', 'satuankegiatan', 'validation_temp'));
+    }
+
+    public function validation(Request $request, $id)
+    {
+        switch ($request->get('action')) {
+            case 'Confirm':
+                $skp = SkpTahunanLines::findOrFail($id);
+                $validation = ValidationTemp::where('old_id', $id)->where('table_name', 'skp_tahunan_lines_realisasi')->first();
+
+                $skpheaderid = $skp->skp_tahunan_header_id;
+                $skp->kegiatan = $validation->kegiatan;
+                $skp->kuantitas_realisasi = $validation->kuantitas_realisasi;
+                $skp->satuan_kegiatan_id = $validation->satuan_kegiatan_id;
+                $skp->kualitas_realisasi = $validation->kualitas_realisasi;
+                $skp->angka_kredit_realisasi = $validation->angka_kredit_realisasi;
+                $skp->waktu_realisasi = $validation->waktu_realisasi;
+                $skp->biaya_realisasi = $validation->biaya_realisasi;
+                $skp->perhitungan = $validation->perhitungan;
+                $skp->nilai_capaian = $validation->nilai_capaian;
+                $skp->status = '02';
+                $skp->save();
+                $validation->delete();
+
+                return redirect()->route('realisasi.show', [$skpheaderid])
+                ->with('flash_message',
+                'Berhasil menerima realisasi SKP tahunan');
+                break;
+            case 'Decline':
+                $skp = SkpTahunanLines::findOrFail($id);
+                $validation = ValidationTemp::where('old_id', $id)->where('table_name', 'skp_tahunan_lines_realisasi')->first();
+
+                $skpheaderid = $skp->skp_tahunan_header_id;
+                $skp->status = '03';
+                $skp->save();
+                $validation->delete();
+                return redirect()->route('realisasi.show', [$skpheaderid])
+                ->with('flash_message',
+                'Berhasil menolak realisasi SKP tahunan.');
+                break;
+            case 'Confirm Update':
+                $skp = SkpTahunanLines::findOrFail($id);
+                $validation = ValidationTemp::where('old_id', $id)->where('table_name', 'skp_tahunan_lines_realisasi')->first();
+                $skpheaderid = $skp->skp_tahunan_header_id;
+
+                $skp->kegiatan = $validation->kegiatan;
+                $skp->kuantitas_realisasi = $validation->kuantitas_realisasi;
+                $skp->satuan_kegiatan_id = $validation->satuan_kegiatan_id;
+                $skp->kualitas_realisasi = $validation->kualitas_realisasi;
+                $skp->angka_kredit_realisasi = $validation->angka_kredit_realisasi;
+                $skp->waktu_realisasi = $validation->waktu_realisasi;
+                $skp->biaya_realisasi = $validation->biaya_realisasi;
+                $skp->perhitungan = $validation->perhitungan;
+                $skp->nilai_capaian = $validation->nilai_capaian;
+                $skp->status = '05';
+
+                $skp->save();
+                $validation->delete();
+                return redirect()->route('realisasi.show', [$skpheaderid])
+                ->with('flash_message',
+                'Berhasil menerima perubahan realisasi SKP tahunan.');
+                break;
+            case 'Decline Update':
+                $skp = SkpTahunanLines::findOrFail($id);
+                $validation = ValidationTemp::where('old_id', $id)->where('table_name', 'skp_tahunan_lines_realisasi')->first();
+                $skpheaderid = $skp->skp_tahunan_header_id;
+                $skp->status = '06';
+
+                $skp->save();
+                $validation->delete();
+
+                return redirect()->route('realisasi.show', [$skpheaderid])
+                ->with('flash_message',
+                'Berhasil menolak perubahan SKP tahunan.');
+                break;
+            case 'Confirm Delete':
+                $skp = SkpTahunanLines::findOrFail($id);
+                $validation = ValidationTemp::where('old_id', $id)->where('table_name', 'skp_tahunan_lines_realisasi')->first();
+                $skpheaderid = $skp->skp_tahunan_header_id;
+
+                $skp->kuantitas_realisasi = null;
+                $skp->kualitas_realisasi = null;
+                $skp->waktu_realisasi = null;
+                $skp->biaya_realisasi = null;
+                $skp->angka_kredit_realisasi = null;
+                $skp->perhitungan = null;
+                $skp->nilai_capaian = null;
+                $skp->status = '08';
+                $skp->save();
+                $validation->delete();
+
+                return redirect()->route('realisasi.show', [$skpheaderid])
+                ->with('flash_message',
+                'Berhasil menerima penghapusan SKP tahunan.');
+            case 'Decline Delete':
+                $skp = SkpTahunanLines::findOrFail($id);
+                $validation = ValidationTemp::where('old_id', $id)->where('table_name', 'skp_tahunan_lines_realisasi')->first();
+                $skpheaderid = $skp->skp_tahunan_header_id;
+
+                $skp->status = '09';
+                $skp->save();
+                $validation->delete();
+
+                return redirect()->route('realisasi.show', [$skpheaderid])
+                ->with('flash_message',
+                'Berhasil menolak penghapusan SKP tahunan.');
+            default:
+                $skp = SkpTahunanLines::findOrFail($id);
+                $skpheaderid = $skp->skp_tahunan_header_id;
+                return redirect()->route('realisasi.show', [$skpheaderid])
+                ->with('flash_message',
+                'Error undetected action.');
+                break;
+        }
     }
 }

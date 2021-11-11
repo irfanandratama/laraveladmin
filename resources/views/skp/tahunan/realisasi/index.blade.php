@@ -15,7 +15,8 @@
                       <div class="card-header">
                           <h1><i class="fa fa-key"></i> Realisasi SKP Tahunan
                             @if (count($skplines) > 0)
-                                <a href="{{ URL::to('skp/tahunan/realisasi/'.$id.'/create') }}" class="btn btn-default pull-right">Add Realisasi SKP Tahunan</a>
+                                <a href="{{ URL::to('skp/tahunan/realisasi/export/'.$id.'') }}" class="btn btn-default pull-right">Cetak Form Penilaian Capaian Sasaran Kinerja</a>
+                                {{-- <a href="{{ URL::to('skp/tahunan/real  isasi/'.$id.'/create') }}" class="btn btn-default pull-right">Add Realisasi SKP Tahunan</a> --}}
                             @endif
                          </h1>
                       </div>
@@ -57,7 +58,7 @@
                                     @forelse ($skplines as $index => $skpline)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td>{{ $skpline->kegiatan }}</td>{{-- Retrieve array of permissions associated to a role and convert to string --}}
+                                        <td>{{ $skpline->kegiatan }}</td>
                                         <td>{{ $skpline->kuantitas_target }}</td>
                                         <td>{{ $skpline->kualitas_target }}</td>
                                         <td>{{ $skpline->waktu_target }}</td>
@@ -69,15 +70,24 @@
                                         <td>{{ $skpline->perhitungan ? $skpline->perhitungan : 'Data Realisasi Belum Dimasukkan'}}</td>
                                         <td>{{ $skpline->nilai_capaian ? $skpline->nilai_capaian : 'Data Realisasi Belum Dimasukkan'}}</td>
                                         <td>
-                                            @if ($skpline->perhitungan && $skpline->nilai_capaian)
-                                                <a href="{{ route('realisasi.edit', $skpline->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Edit Realisasi</a>
-                                            @else
-                                                <a href="{{ URL::to('skp/tahunan/realisasi/'.$skpline->id.'/create') }}" class="btn btn-info pull-left" style="margin-right: 3px;">Add Realisasi</a>
+                                            @if (strpos(strtolower($skpline->keterangan), 'diterima') !== false || strpos(strtolower($skpline->keterangan), 'disetujui') !== false || strpos(strtolower($skpline->keterangan), 'ditolak') !== false && $skpline->status !== '03')
+                                                @if ($skpline->perhitungan && $skpline->nilai_capaian)
+                                                    <a href="{{ route('realisasi.edit', $skpline->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Edit Realisasi</a>
+                                                @else
+                                                    <a href="{{ URL::to('skp/tahunan/realisasi/'.$skpline->id.'/create') }}" class="btn btn-info pull-left" style="margin-right: 3px;">Add Realisasi</a>
+                                                @endif
+
+                                                {!! Form::open(['method' => 'DELETE', 'route' => ['realisasi.destroy', $skpline->id], 'onsubmit' => 'return confirm("Yakin menghapus data ini? Ini hanya akan menghapus data realisasi.")' ]) !!}
+                                                {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
+                                                {!! Form::close() !!}
                                             @endif
 
-                                            {!! Form::open(['method' => 'DELETE', 'route' => ['realisasi.destroy', $skpline->id], 'onsubmit' => 'return confirm("Yakin menghapus data ini? Ini hanya akan menghapus data realisasi.")' ]) !!}
-                                            {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
-                                            {!! Form::close() !!}
+
+                                            @if (strpos(strtolower($skpline->keterangan), 'pengajuan') !== false)
+                                                @hasanyrole('Kepegawaian')
+                                                    <a href="{{ route('realisasi.validate_data', $skpline->id) }}" class="btn btn-primary pull-left" style="margin-right: 3px;">Validasi</a>
+                                                @endhasanyrole
+                                            @endif
                                         </td>
                                     </tr>
                                     @empty

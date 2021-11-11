@@ -98,23 +98,37 @@ Route::resource('profile', 'ProfileController');
 
 Route::group(['prefix'=>'skp'], function(){
 	Route::resource('/tahunan', 'SkpTahunanController');
+	Route::get('/tahunan/export/{id}', 'SkpTahunanController@export')->name('tahunan.export');
+	Route::get('/tahunan/validate/{id}', 'SkpTahunanController@validate_data')->name('tahunan.validate_data');
+	Route::put('/tahunan/validation/{id}', 'SkpTahunanController@validation')->name('tahunan.validation');
+
+	
 	Route::group(['prefix'=>'tahunan'], function ()
 	{
 
 		Route::get('/target/{id}/create', 'SkpTahunanTargetController@create');
 		Route::resource('/target', 'SkpTahunanTargetController');
+		Route::get('/target/export/{id}', 'SkpTahunanTargetController@export')->name('target.export');
+		Route::get('/target/validate/{id}', 'SkpTahunanTargetController@validate_data')->name('target.validate_data');
+		Route::put('/target/validation/{id}', 'SkpTahunanTargetController@validation')->name('target.validation');
 
 		Route::get('/realisasi/{id}/create', 'SkpTahunanRealisasiController@create');
 		Route::resource('/realisasi', 'SkpTahunanRealisasiController');
+		Route::get('/realisasi/export/{id}', 'SkpTahunanRealisasiController@export')->name('realisasi.export');
+		Route::get('/realisasi/validate/{id}', 'SkpTahunanRealisasiController@validate_data')->name('realisasi.validate_data');
+		Route::put('/realisasi/validation/{id}', 'SkpTahunanRealisasiController@validation')->name('realisasi.validation');
 
 		Route::get('/tugas/{id}/create', 'TugasTambahanController@create');
 		Route::resource('/tugas', 'TugasTambahanController');
+		Route::get('/tugas/validate/{id}', 'TugasTambahanController@validate_data')->name('tugas.validate_data');
+		Route::put('/tugas/validation/{id}', 'TugasTambahanController@validation')->name('tugas.validation');
 
 		Route::get('/kreativitas/{id}/create', 'KreativitasController@create');
 		Route::resource('/kreativitas', 'KreativitasController');
 	});
 
 	Route::resource('/penilaian', 'PenilaianPerilakuController');
+	Route::get('/penilaian/export/{id}', 'PenilaianPerilakuController@export')->name('penilaian.export');
 });
 
 

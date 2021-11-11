@@ -55,11 +55,19 @@
                                         <td>{{ $tugas->nama_tugas }}</td>
                                         <td>{{ $tugas->no_sk }}</td>
                                         <td>
-                                            <a href="{{ route('tugas.edit', $tugas->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Edit</a>
+                                            @if (strpos(strtolower($tugas->keterangan), 'diterima') !== false || strpos(strtolower($tugas->keterangan), 'disetujui') !== false || strpos(strtolower($tugas->keterangan), 'ditolak') !== false && $tugas->status !== '03')
+                                                <a href="{{ route('tugas.edit', $tugas->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Edit</a>
 
-                                            {!! Form::open(['method' => 'DELETE', 'route' => ['tugas.destroy', $tugas->id], 'onsubmit' => 'return confirm("Yakin menghapus data ini?")' ]) !!}
-                                            {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
-                                            {!! Form::close() !!}
+                                                {!! Form::open(['method' => 'DELETE', 'route' => ['tugas.destroy', $tugas->id], 'onsubmit' => 'return confirm("Yakin menghapus data ini?")' ]) !!}
+                                                {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
+                                                {!! Form::close() !!}
+                                            @endif
+
+                                            @if (strpos(strtolower($tugas->keterangan), 'pengajuan') !== false)
+                                                @hasanyrole('Kepegawaian')
+                                                    <a href="{{ route('tugas.validate_data', $tugas->id) }}" class="btn btn-primary pull-left" style="margin-right: 3px;">Validasi</a>
+                                                @endhasanyrole
+                                            @endif
                                         </td>
                                     </tr>
                                     @empty

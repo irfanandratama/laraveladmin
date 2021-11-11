@@ -14,6 +14,7 @@
                   <div class="card">
                       <div class="card-header">
                           <h1><i class="fa fa-key"></i> Target SKP Tahunan
+                            <a href="{{ URL::to('skp/tahunan/target/export/'.$id.'') }}" class="btn btn-default pull-right">Cetak Form SKP</a>
                             <a href="{{ URL::to('skp/tahunan/target/'.$id.'/create') }}" class="btn btn-default pull-right">Add Target SKP Tahunan</a>
                          </h1>
                       </div>
@@ -44,6 +45,7 @@
                                         <th>Target Kualitas</th>
                                         <th>Target Waktu</th>
                                         <th>Biaya</th>
+                                        <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -59,12 +61,21 @@
                                         <td>{{ $skpline->kualitas_target }}</td>
                                         <td>{{ $skpline->waktu_target }}</td>
                                         <td>{{ $skpline->biaya_target }}</td>
+                                        <td>{{ $skpline->keterangan }}</td>
                                         <td>
-                                            <a href="{{ route('target.edit', $skpline->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Edit</a>
+                                            @if (strpos(strtolower($skpline->keterangan), 'diterima') !== false || strpos(strtolower($skpline->keterangan), 'disetujui') !== false || strpos(strtolower($skpline->keterangan), 'ditolak') !== false && $skpline->status !== '03')
+                                                <a href="{{ route('target.edit', $skpline->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Edit</a>
 
-                                            {!! Form::open(['method' => 'DELETE', 'route' => ['target.destroy', $skpline->id], 'onsubmit' => 'return confirm("Yakin menghapus data ini?")' ]) !!}
-                                            {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
-                                            {!! Form::close() !!}
+                                                {!! Form::open(['method' => 'DELETE', 'route' => ['target.destroy', $skpline->id], 'onsubmit' => 'return confirm("Yakin menghapus data ini?")' ]) !!}
+                                                {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
+                                                {!! Form::close() !!}
+                                            @endif
+
+                                            @if (strpos(strtolower($skpline->keterangan), 'pengajuan') !== false)
+                                                @hasanyrole('Kepegawaian')
+                                                    <a href="{{ route('target.validate_data', $skpline->id) }}" class="btn btn-primary pull-left" style="margin-right: 3px;">Validasi</a>
+                                                @endhasanyrole
+                                            @endif
                                         </td>
                                     </tr>
                                     @empty
