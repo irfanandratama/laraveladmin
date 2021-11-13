@@ -132,7 +132,7 @@
           <div class="container-fluid">
             <div class="navbar-holder d-flex align-items-center justify-content-between">
               <div class="navbar-header"><a id="toggle-btn" href="#" class="menu-btn"><i class="fa fa-align-left fa-2x"></i></a><a href="index.html" class="navbar-brand">
-                  <div class="brand-text d-none d-md-inline-block"><span>SI </span><strong class="text-primary">SKP</strong></div></a></div>
+                  <div class="brand-text d-none d-md-inline-block"><span>SI </span><strong class="text-primary">PKP</strong></div></a></div>
               <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
                 {{-- <li class="nav-item"> 
                   <div class="searchbar">
