@@ -262,12 +262,16 @@ class SkpTahunanTargetController extends Controller
         // return Excel::download(new SkpTahunanTargetExport($id), 'FORM SKP.xlsx');
         // $id = $this->id;
         $skpheader = SkpTahunanHeader::find($id);
-        $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)->get();
+        $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)->where('status', 
+        '!=', '03')->get();
         $satuan = SatuanKegiatan::all();
         $user = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $skpheader->user_id)->first();
         $user_atasan = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $user->atasan_1_id)->first();
         $tugass = TugasTambahan::where('skp_tahunan_header_id', $id)->get();
         $kreativitas = Kreativitas::where('skp_tahunan_header_id', $id)->get();
+
+        $satker = \explode(' ', $user->satuan_kerja->satuan_kerja);
+        $lokasi = array_pop($satker);
 
         $pdf = \PDF::loadView('exports.form-skp-pdf', compact(
             'skplines',
@@ -275,7 +279,8 @@ class SkpTahunanTargetController extends Controller
             'user',
             'user_atasan',
             'tugass',
-            'kreativitas'
+            'kreativitas',
+            'lokasi'
         ));
         // return $pdf->stream();
         return $pdf->download('FORM_SKP.pdf');

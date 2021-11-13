@@ -37,7 +37,8 @@
                                         <th>No</th>
                                         <th>Nama Pegawai</th>
                                         <th>Periode SKP</th>
-                                        <th></th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
 
@@ -49,8 +50,17 @@
 
                                         <td>{{ $skp->name }}</td>
                                         <td>{{ \Carbon\Carbon::parse($skp->periode_mulai)->format('d M Y') . ' - ' . \Carbon\Carbon::parse($skp->periode_selesai)->format('d M Y') }}</td>
+                                        <td>{{ $skp->keterangan }}</td>
                                         <td class="text-center align-middle">
-                                            <a href="{{ route('penilaian.show', $skp->id) }}" class="btn btn-info" style="margin-right: 3px; align-self: center;">Penilaian Perilaku</a>
+                                            @if (strpos(strtolower($skp->keterangan), 'belum ada') !== false || strpos(strtolower($skp->keterangan), 'diterima') !== false || strpos(strtolower($skp->keterangan), 'disetujui') !== false || strpos(strtolower($skp->keterangan), 'ditolak') !== false && $skp->status !== '03')
+                                                <a href="{{ route('penilaian.show', $skp->id) }}" class="btn btn-info" style="margin-right: 3px; align-self: center;">Penilaian Perilaku</a>
+                                            @endif
+
+                                            @if (strpos(strtolower($skp->keterangan), 'pengajuan') !== false)
+                                                @hasanyrole('Kepegawaian')
+                                                    <a href="{{ route('penilaian.validate_data', $skp->id) }}" class="btn btn-primary pull-left" style="margin-right: 3px;">Validasi Penilaian Perilaku</a>
+                                                @endhasanyrole
+                                            @endif
                                         </td>
                                     </tr>
                                     @empty

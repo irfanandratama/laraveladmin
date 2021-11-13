@@ -9,6 +9,9 @@ use App\SatuanKegiatan;
 use App\TugasTambahan;
 use App\Kreativitas;
 use App\User;
+use App\Status;
+use App\ValidationTemp;
+
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,12 +33,42 @@ class PenilaianPerilakuController extends Controller
     {
         if (Auth::user()->hasRole(['Super-Admin', 'Administrator', 'Kepegawaian'])) {
             $skps = SkpTahunanHeader::join('users', 'users.id', '=', 'skp_tahunan_header.user_id')
-            ->get(['skp_tahunan_header.*', 'users.name']);
+            ->whereIn('status', ['01', '02', '04', '05', '06', '07', '09'])
+            ->get(['skp_tahunan_header.*','users.name']);
             $users = User::all()->pluck('name', 'id'); 
+
+            $skps->map(function ($skp) {
+                $penilaian = PenilaianPerilaku::where('skp_tahunan_header_id', $skp->id)->first();
+                if ($penilaian) {
+                    $status = Status::where('status', $penilaian->status)->first();
+                    if ($status) {
+                        $skp['keterangan'] = $status->keterangan;
+                    } 
+                } else {
+                    $skp['keterangan'] = 'Belum ada nilai Penilaian Perilaku';
+                }
+            });
+
+
             return view('skp.penilaian-perilaku.index', compact('skps', 'users'));
         } else {
             $skps = SkpTahunanHeader::join('users', 'users.id', '=', 'skp_tahunan_header.user_id')
-                ->where('skp_tahunan_header.user_id', Auth::id())->get(['skp_tahunan_header.*', 'users.name']);
+                ->where('skp_tahunan_header.user_id', Auth::id())
+                ->whereIn('status', ['01', '02', '04', '05', '06', '07', '09'])
+                ->get(['skp_tahunan_header.*','users.name']);
+
+                $skps->map(function ($skp) {
+                    $penilaian = PenilaianPerilaku::where('skp_tahunan_header_id', $skp->id)->first();
+                    if ($penilaian) {
+                        $status = Status::where('status', $penilaian->status)->first();
+                        if ($status) {
+                            $skp['keterangan'] = $status->keterangan;
+                        } 
+                    } else {
+                        $skp['keterangan'] = 'Belum ada nilai Penilaian Perilaku';
+                    }
+                });
+
             return view('skp.penilaian-perilaku.index')->with('skps', $skps);
         }
     }
@@ -78,11 +111,12 @@ class PenilaianPerilakuController extends Controller
 
         $request->merge(['jumlah' => $jumlah ]);
         $request->merge(['rata_rata' => $rerata ]);
+        $request->merge(['status' => '01' ]);
 
         $penilaian = PenilaianPerilaku::create($request->only('orientasi_pelayanan', 'integritas', 'komitmen', 
-            'disiplin', 'kerjasama', 'kepemimpinan', 'jumlah', 'rata_rata', 'skp_tahunan_header_id'));
+            'disiplin', 'kerjasama', 'kepemimpinan', 'jumlah', 'rata_rata', 'skp_tahunan_header_id', 'status'));
         
-        return redirect()->route('penilaian.show', [$request->skp_tahunan_header_id])
+        return redirect()->route('penilaian.index')
         ->with('flash_message',
             'Penilaian Perilaku successfully added.');
     }
@@ -123,6 +157,8 @@ class PenilaianPerilakuController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $penilaian = PenilaianPerilaku::findOrFail($id);
+
         $this->validate($request, [
             'orientasi_pelayanan'=>'required',
             'integritas'=>'required',
@@ -137,10 +173,23 @@ class PenilaianPerilakuController extends Controller
         $this->messages()
     );
 
-    $penilaian = PenilaianPerilaku::create($request->only('orientasi_pelayanan', 'integritas', 'komitmen', 
-        'disiplin', 'kerjasama', 'kepemimpinan', 'jumlah', 'rata-rata'));
+    $jumlah = $request->orientasi_pelayanan + $request->integritas + $request->komitmen + $request->disiplin 
+            + $request->kerjasama + $request->kepemimpinan;
+    $rerata = $jumlah / 6;
+
+    $request->merge(['jumlah' => $jumlah ]);
+    $request->merge(['rata_rata' => $rerata ]);
+    $request->merge(['old_id' => $penilaian->id ]);
+    $request->merge(['table_name' => 'penilaian_perilaku' ]);
+
+    ValidationTemp::create($request->only('orientasi_pelayanan', 'integritas', 'komitmen', 
+        'disiplin', 'kerjasama', 'kepemimpinan', 'jumlah', 'rata_rata', 'old_id', 'table_name'));
+
+
+    $penilaian->status = '04';
+    $penilaian->save();
     
-    return redirect()->route('penilaian.show', [$request->skp_tahunan_header_id])
+    return redirect()->route('penilaian.index')
     ->with('flash_message',
         'Penilaian Perilaku successfully updated.');
     }
@@ -198,5 +247,80 @@ class PenilaianPerilakuController extends Controller
         ));
         // return $pdf->stream();
         return $pdf->download('PERILAKU KERJA.pdf');
+    }
+
+    public function validate_data($id)
+    {
+        $skpheader = SkpTahunanHeader::find($id);
+        $penilaian = PenilaianPerilaku::where('skp_tahunan_header_id', $id)->first();
+        $user = User::find($skpheader->user_id);
+        $users = User::all()->pluck('name', 'id');
+        $validation_temp = ValidationTemp::where('old_id', $penilaian->id)->where('table_name', 'penilaian_perilaku')->first();
+
+        return view('skp.penilaian-perilaku.validation', compact('skpheader', 'penilaian', 'id', 'user', 'users', 'validation_temp'));
+    }
+
+    public function validation(Request $request, $id)
+    {
+        switch ($request->get('action')) {
+            case 'Confirm':
+                $penilaian = PenilaianPerilaku::findOrFail($id);
+                $skpheaderid = $penilaian->skp_tahunan_header_id;
+                $penilaian->status = '02';
+                $penilaian->save();
+                return redirect()->route('penilaian.index')
+                ->with('flash_message',
+                'Berhasil menerima tugas tambahan SKP tahunan');
+                break;
+            case 'Decline':
+                $penilaian = PenilaianPerilaku::findOrFail($id);
+                $skpheaderid = $penilaian->skp_tahunan_header_id;
+                $penilaian->status = '03';
+                $penilaian->save();
+                return redirect()->route('penilaian.index')
+                ->with('flash_message',
+                'Berhasil menolak target SKP tahunan.');
+                break;
+            case 'Confirm Update':
+                $penilaian = PenilaianPerilaku::findOrFail($id);
+                $validation = ValidationTemp::where('old_id', $id)->where('table_name', 'penilaian_perilaku')->first();
+                $skpheaderid = $penilaian->skp_tahunan_header_id;
+                $penilaian->orientasi_pelayanan = $validation->orientasi_pelayanan;
+                $penilaian->integritas = $validation->integritas;
+                $penilaian->disiplin = $validation->disiplin;
+                $penilaian->kerjasama = $validation->kerjasama;
+                $penilaian->kepemimpinan = $validation->kepemimpinan;
+                $penilaian->disiplin = $validation->disiplin;
+                $penilaian->jumlah = $validation->jumlah;
+                $penilaian->rata_rata = $penilaian->rata_rata;
+                $penilaian->status = '05';
+
+                $penilaian->save();
+                $validation->delete();
+                return redirect()->route('penilaian.index')
+                ->with('flash_message',
+                'Berhasil menerima perubahan SKP tahunan.');
+                break;
+            case 'Decline Update':
+                $penilaian = PenilaianPerilaku::findOrFail($id);
+                $validation = ValidationTemp::where('old_id', $id)->where('table_name', 'penilaian_perilaku')->first();
+                $skpheaderid = $penilaian->skp_tahunan_header_id;
+                $penilaian->status = '06';
+
+                $penilaian->save();
+                $validation->delete();
+
+                return redirect()->route('penilaian.index')
+                ->with('flash_message',
+                'Berhasil menolak perubahan SKP tahunan.');
+                break;
+            default:
+                $penilaian = Kreativitas::findOrFail($id);
+                $skpheaderid = $penilaian->skp_tahunan_header_id;
+                return redirect()->route('kreativitas.show', [$skpheaderid])
+                ->with('flash_message',
+                'Error undetected action.');
+                break;
+        }
     }
 }

@@ -304,12 +304,15 @@ class SkpTahunanRealisasiController extends Controller
         // return Excel::download(new SkpTahunanTargetExport($id), 'FORM SKP.xlsx');
         // $id = $this->id;
         $skpheader = SkpTahunanHeader::find($id);
-        $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)->get();
+        $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)->where('status', 
+        '!=', '03')->get();
         $satuan = SatuanKegiatan::all();
         $user = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $skpheader->user_id)->first();
         $user_atasan = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $user->atasan_1_id)->first();
-        $tugass = TugasTambahan::where('skp_tahunan_header_id', $id)->get();
-        $kreativitas = Kreativitas::where('skp_tahunan_header_id', $id)->get();
+        $tugass = TugasTambahan::where('skp_tahunan_header_id', $id)->where('status', 
+        '!=', '03')->get();
+        $kreativitas = Kreativitas::where('skp_tahunan_header_id', $id)->where('status', 
+        '!=', '03')->get();
 
         $nilai_capaian = $skplines->sum('nilai_capaian');
         $count_lines = count($skplines);

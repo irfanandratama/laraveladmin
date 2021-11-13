@@ -42,6 +42,7 @@
                                         <th>Tanggal</th>
                                         <th>Kegiatan Kreativitas</th>
                                         <th>Kuantitas</th>
+                                        <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -58,12 +59,21 @@
                                                 <td>{{ $kreatif->kuantitas .' '. $satu->satuan_kegiatan }}</td>                                                
                                             @endif
                                         @endforeach
+                                        <td>{{ $kreatif->keterangan }}</td>
                                         <td>
-                                            <a href="{{ route('kreativitas.edit', $kreatif->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Edit</a>
+                                            @if (strpos(strtolower($kreatif->keterangan), 'diterima') !== false || strpos(strtolower($kreatif->keterangan), 'disetujui') !== false || strpos(strtolower($kreatif->keterangan), 'ditolak') !== false && $kreatif->status !== '03')
+                                                <a href="{{ route('kreativitas.edit', $kreatif->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Edit</a>
 
-                                            {!! Form::open(['method' => 'DELETE', 'route' => ['kreativitas.destroy', $kreatif->id], 'onsubmit' => 'return confirm("Yakin menghapus data ini?")' ]) !!}
-                                            {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
-                                            {!! Form::close() !!}
+                                                {!! Form::open(['method' => 'DELETE', 'route' => ['kreativitas.destroy', $kreatif->id], 'onsubmit' => 'return confirm("Yakin menghapus data ini?")' ]) !!}
+                                                {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
+                                                {!! Form::close() !!}
+                                            @endif
+                                            
+                                            @if (strpos(strtolower($kreatif->keterangan), 'pengajuan') !== false)
+                                                @hasanyrole('Kepegawaian')
+                                                    <a href="{{ route('kreativitas.validate_data', $kreatif->id) }}" class="btn btn-primary pull-left" style="margin-right: 3px;">Validasi</a>
+                                                @endhasanyrole
+                                            @endif
                                         </td>
                                     </tr>
                                     @empty

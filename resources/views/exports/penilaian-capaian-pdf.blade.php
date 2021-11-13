@@ -16,7 +16,7 @@
                 font-size: 6;
                 font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
                 height: 10;
-                width: 7%;
+                /* width: 7%; */
             }
             .wide {
                 width: 30%;
@@ -33,12 +33,11 @@
         <div class="table-responsive">
             <table class="table-bordered">
                 <thead>
-                    <col span="2" class="wide">
                     <tr>
                         <col>
                         <colgroup span="4"></colgroup>
                         <th style="text-align: center" rowspan="2">NO</th>
-                        <th style="text-align: center" rowspan="2">I. KEGIATAN TUGAS JABATAN</th>
+                        <th style="text-align: center" rowspan="2" class="wide">I. KEGIATAN TUGAS JABATAN</th>
                         <th style="text-align: center" rowspan="2">AK</th>
                         <th colspan="4" style="text-align: center" scope="colgroup">TARGET</th>
                         <th style="text-align: center" rowspan="2">AK</th>
@@ -58,7 +57,7 @@
                     </tr>
                     <tr bgcolor="RGB(192,192,192)" style="text-align: center" height="5">
                         <th>1</th>
-                        <th>2</th>
+                        <th  class="wide">2</th>
                         <th>3</th>
                         <th>4</th>
                         <th>5</th>
@@ -77,19 +76,19 @@
                     <col span="2" class="wide">
                    @forelse ($skplines as $index => $skpline)
                    <tr>
-                    <td>{{ $index + 1 }}</td>
+                    <td style="text-align: center">{{ $index + 1 }}</td>
                     <td>{{ $skpline->kegiatan }}</td>
-                    <td>{{ $skpline->angka_kredit_target }}</td>
-                    <td>{{ $skpline->kuantitas_target }}</td>
-                    <td>{{ $skpline->kualitas_target }}</td>
-                    <td>{{ $skpline->waktu_target }}</td>
-                    <td>{{ $skpline->biaya_target }}</td>
-                    <td>{{ $skpline->angka_kredit_realisasi}}</td>
-                    <td>{{ $skpline->kuantitas_realisasi ? $skpline->kuantitas_realisasi : '' }}</td>
-                    <td>{{ $skpline->kualitas_realisasi ? $skpline->kualitas_realisasi : ''}}</td>
-                    <td>{{ $skpline->waktu_realisasi ? $skpline->waktu_realisasi : ''}}</td>
-                    <td>{{ $skpline->biaya_realisasi !== null ? $skpline->biaya_realisasi : ''}}</td>
-                    <td>{{ $skpline->perhitungan ? $skpline->perhitungan : ''}}</td>
+                    <td>{{ number_format((float)$skpline->angka_kredit_target, 2, '.', '') }}</td>
+                    <td>{{ number_format((float)$skpline->kuantitas_target, 2, '.', '') }}</td>
+                    <td>{{ number_format((float)$skpline->kualitas_target, 2, '.', '') }}</td>
+                    <td>{{ number_format((float)$skpline->waktu_target, 2, '.', '') }}</td>
+                    <td>{{ number_format((float)$skpline->biaya_target, 2, '.', '') }}</td>
+                    <td>{{ number_format((float)$skpline->angka_kredit_realisasi, 2, '.', '')}}</td>
+                    <td>{{ $skpline->kuantitas_realisasi ? number_format((float)$skpline->kuantitas_realisasi, 2, '.', '') : '' }}</td>
+                    <td>{{ $skpline->kualitas_realisasi ? number_format((float)$skpline->kualitas_realisasi, 2, '.', '') : ''}}</td>
+                    <td>{{ $skpline->waktu_realisasi ? number_format((float)$skpline->waktu_realisasi, 2, '.', '') : ''}}</td>
+                    <td>{{ $skpline->biaya_realisasi !== null ? number_format((float)$skpline->biaya_realisasi, 2, '.', '') : ''}}</td>
+                    <td>{{ $skpline->perhitungan ? number_format((float)$skpline->perhitungan, 2, '.', '') : ''}}</td>
                     <td>{{ $skpline->nilai_capaian ? $skpline->nilai_capaian : ''}}</td>
                    </tr>
                    @empty
@@ -104,19 +103,19 @@
                 <thead>
                     <tr>
                         <th style="text-align: center"></th>
-                        <th style="text-align: left" colspan="13">II. TUGAS TAMBAHAN DAN KREATIVITAS:</th>
+                        <th style="text-align: left" colspan="13" class="wide">II. TUGAS TAMBAHAN DAN KREATIVITAS:</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td style="text-align: center">A</td>
-                        <td style="text-align: left; font-weight: bold;" colspan="12">Tugas Tambahan :</td>
-                        <td rowspan="{{ count($tugass) + 2 }}" style="text-align: center">{{ count($tugass) }}</td>
+                        <td style="text-align: left; font-weight: bold;" colspan="12" class="wide">Tugas Tambahan :</td>
+                        <td rowspan="{{ count($tugass) + 2 }}" style="text-align: center">{{ number_format((float)count($tugass), 2, '.', '') }}</td>
                     </tr>
                    @forelse ($tugass as $index => $tugas)
                    <tr>
                     <td>{{ $index + 1 }}</td>
-                    <td colspan="12">{{ $tugas->nama_tugas }}</td>
+                    <td colspan="12" class="wide">{{ $tugas->nama_tugas }}</td>
                    </tr>
                    @empty
                        
@@ -127,13 +126,13 @@
                    </tr>
                    <tr>
                         <td style="text-align: center">B</td>
-                        <td style="text-align: left; font-weight: bold;" colspan="12">Kreativitas</td>
-                        <td rowspan="{{ count($kreativitas) + 2 }}" style="text-align: center">{{ count($kreativitas) > 0 ? count($kreativitas) : '' }}</td>
+                        <td style="text-align: left; font-weight: bold;" colspan="12" class="wide">Kreativitas</td>
+                        <td rowspan="{{ count($kreativitas) + 2 }}" style="text-align: center">{{ count($kreativitas) > 0 ? number_format((float)count($kreativitas), 2, '.', '') : '' }}</td>
                    </tr>
                    @forelse ($kreativitas as $index => $kreatif)
                    <tr>
                     <td>{{ $index + 1 }}</td>
-                    <td colspan="12">{{ $kreatif->kegiatan_kreativitas }}</td>
+                    <td colspan="12" class="wide">{{ $kreatif->kegiatan_kreativitas }}</td>
                    </tr>
                    @empty
                        

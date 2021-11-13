@@ -169,6 +169,15 @@
                     <tr>
                         <th ></th>
                         <th ></th>
+                        <th ></th>
+                        <th ></th>
+                        <th ></th>
+                        <th ></th>
+                        <th style="text-align: center" colspan="4">{{ $lokasi . ', ' . \Carbon\Carbon::now()->format('d M Y') }}</th>
+                    </tr>
+                    <tr>
+                        <th ></th>
+                        <th ></th>
                         <th style="text-align: center" colspan="2">Pejabat Penilai,</th>
                         <th ></th>
                         <th ></th>

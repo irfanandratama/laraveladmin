@@ -125,10 +125,14 @@ Route::group(['prefix'=>'skp'], function(){
 
 		Route::get('/kreativitas/{id}/create', 'KreativitasController@create');
 		Route::resource('/kreativitas', 'KreativitasController');
+		Route::get('/tugas/validate/{id}', 'KreativitasController@validate_data')->name('kreativitas.validate_data');
+		Route::put('/tugas/validation/{id}', 'KreativitasController@validation')->name('kreativitas.validation');
 	});
 
 	Route::resource('/penilaian', 'PenilaianPerilakuController');
 	Route::get('/penilaian/export/{id}', 'PenilaianPerilakuController@export')->name('penilaian.export');
+	Route::get('/penilaian/validate/{id}', 'PenilaianPerilakuController@validate_data')->name('penilaian.validate_data');
+	Route::put('/penilaian/validation/{id}', 'PenilaianPerilakuController@validation')->name('penilaian.validation');
 });
 
 
