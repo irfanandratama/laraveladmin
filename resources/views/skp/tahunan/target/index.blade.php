@@ -14,7 +14,9 @@
                   <div class="card">
                       <div class="card-header">
                           <h1><i class="fa fa-key"></i> Target SKP Tahunan
-                            <a href="{{ URL::to('skp/tahunan/target/export/'.$id.'') }}" class="btn btn-default pull-right">Cetak Form SKP</a>
+                            @if (count($skplines) > 0)
+                                <a href="{{ URL::to('skp/tahunan/target/export/'.$id.'') }}" class="btn btn-default pull-right">Cetak Form SKP</a>
+                            @endif
                             <a href="{{ URL::to('skp/tahunan/target/'.$id.'/create') }}" class="btn btn-default pull-right">Add Target SKP Tahunan</a>
                          </h1>
                       </div>

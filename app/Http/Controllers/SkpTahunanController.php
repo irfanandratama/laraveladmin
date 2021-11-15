@@ -296,7 +296,6 @@ class SkpTahunanController extends Controller
             'base64'
         ));
 
-        // Storage::makeDirectory('tmp');
         Storage::disk('local')->put('FORM_SKP.pdf', $pdf1->download()->getOriginalContent());
         Storage::disk('local')->put('PENGUKURAN.pdf', $pdf2->download()->getOriginalContent());
         Storage::disk('local')->put('PERILAKU.pdf', $pdf3->download()->getOriginalContent());
@@ -307,13 +306,11 @@ class SkpTahunanController extends Controller
         $oMerger->addPdf(Storage::disk('local')->path('PERILAKU.pdf'), 'all');
         $oMerger->addPdf(Storage::disk('local')->path('PENILAIAN.pdf'), 'all');
         $oMerger->merge();
-        // return $pdf->stream();
-        $oMerger->save('PENILAIAN_KESELURUHAN.pdf');
+        // $oMerger->save('PENILAIAN_KESELURUHAN.pdf');
         Storage::disk('local')->delete('FORM_SKP.pdf');
         Storage::disk('local')->delete('PENGUKURAN.pdf');
         Storage::disk('local')->delete('PERILAKU.pdf');
         Storage::disk('local')->delete('PENILAIAN.pdf');
-        // Storage::deleteDirectory('tmp');
         return $oMerger->download('PENILAIAN_KESELURUHAN.pdf'); //$pdf->download('PENILAIAN.pdf');
     }
 
