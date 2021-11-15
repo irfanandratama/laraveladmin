@@ -169,7 +169,7 @@
                     <tr>
                         <th ></th>
                         <th ></th>
-                        <th ></th>
+                        <th colspan="2"></th>
                         <th ></th>
                         <th ></th>
                         <th ></th>

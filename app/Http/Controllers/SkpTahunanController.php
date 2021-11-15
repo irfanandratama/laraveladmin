@@ -6,10 +6,16 @@ use Illuminate\Http\Request;
 
 use App\SkpTahunanHeader;
 use App\User;
-use App\Status;
+use App\SkpTahunanLines;
+use App\SatuanKegiatan;
+use App\TugasTambahan;
+use App\Kreativitas;
 use App\ValidationTemp;
+use App\Status;
+use App\PenilaianPerilaku;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 //Importing laravel-permission models
 use Spatie\Permission\Models\Role;
@@ -20,6 +26,7 @@ use Session;
 
 use App\Exports\SkpExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 
 class SkpTahunanController extends Controller
 {
@@ -196,7 +203,118 @@ class SkpTahunanController extends Controller
     public function export($id)
     {
         
-        return Excel::download(new SkpExport($id), 'SKP.xlsx');
+        $skpheader = SkpTahunanHeader::find($id);
+        $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)->where('status', 
+        '!=', '03')->get();
+        $satuan = SatuanKegiatan::all();
+        $user = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $skpheader->user_id)->first();
+        $user_atasan = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $user->atasan_1_id)->first();
+        $user_atasan_atasan = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $user->atasan_2_id)->first();
+        $penilaian = PenilaianPerilaku::where('skp_tahunan_header_id', $id)->where('status', 
+        '!=', '03')->first();
+        $tugass = TugasTambahan::where('skp_tahunan_header_id', $id)->where('status', 
+        '!=', '03')->get();
+        $kreativitas = Kreativitas::where('skp_tahunan_header_id', $id)->where('status', 
+        '!=', '03')->get();
+        $penilaian = PenilaianPerilaku::where('skp_tahunan_header_id', $id)->where('status',
+        '!=', '03')->first();
+
+        $path = base64_encode(file_get_contents(\public_path('img/garuda.jpg')));
+        $type = \pathinfo('garuda.jpg', PATHINFO_EXTENSION);
+        $base64 = 'data:image/' . $type . ';base64,' . $path;
+
+        $nilai_capaian = $skplines->sum('nilai_capaian');
+        $count_lines = count($skplines);
+        $count_tugas = count($tugass);
+        $count_kreativitas = count($kreativitas);
+
+        $total_nilai = $nilai_capaian / $count_lines + $count_tugas + $count_kreativitas;
+        $capaian = (
+            ($total_nilai <= 50) ? "Buruk" :
+             (($total_nilai <= 60 && $total_nilai > 50) ? "Sedang" :
+              (($total_nilai <= 75 && $total_nilai > 60) ? "Cukup" :
+               (($total_nilai <= 90 && $total_nilai > 75) ? "Baik" : "Sangat Baik")))
+            );
+
+        $nilai_skp = $total_nilai * 60 / 100;
+        $nilai_perilaku = $penilaian->rata_rata * 40 / 100;
+        $jumlah_nilai = $nilai_skp + $nilai_perilaku;
+        $capaian_final = (
+            ($jumlah_nilai <= 50) ? "Buruk" :
+             (($jumlah_nilai <= 60 && $jumlah_nilai > 50) ? "Sedang" :
+              (($jumlah_nilai <= 75 && $jumlah_nilai > 60) ? "Cukup" :
+               (($jumlah_nilai <= 90 && $jumlah_nilai > 75) ? "Baik" : "Sangat Baik")))
+            );
+        $satker = \explode(' ', $user->satuan_kerja->satuan_kerja);
+        $lokasi = array_pop($satker);
+        $oMerger = PDFMerger::init();
+        $pdf1 = \PDF::loadView('exports.form-skp-pdf', compact(
+            'skplines',
+            'satuan',
+            'user',
+            'user_atasan',
+            'tugass',
+            'kreativitas',
+            'lokasi'
+        ));
+        $pdf2 = \PDF::loadView('exports.penilaian-capaian-pdf', compact(
+            'skpheader',
+            'skplines',
+            'satuan',
+            'user',
+            'user_atasan',
+            'tugass',
+            'kreativitas',
+            'total_nilai',
+            'capaian',
+            'lokasi'
+        ));
+        $pdf3 = \PDF::loadView('exports.penilaian-perilaku-pdf', compact(
+            'skpheader',
+            'skplines',
+            'satuan',
+            'user',
+            'user_atasan',
+            'total_nilai',
+            'penilaian'
+        ));
+        $pdf = \PDF::loadView('exports.penilaian-akhir-pdf', compact(
+            'skpheader',
+            'skplines',
+            'satuan',
+            'user',
+            'user_atasan',
+            'user_atasan_atasan',
+            'penilaian',
+            'total_nilai',
+            'capaian',
+            'lokasi',
+            'nilai_skp',
+            'nilai_perilaku',
+            'jumlah_nilai',
+            'capaian_final',
+            'base64'
+        ));
+
+        // Storage::makeDirectory('tmp');
+        Storage::disk('local')->put('FORM_SKP.pdf', $pdf1->download()->getOriginalContent());
+        Storage::disk('local')->put('PENGUKURAN.pdf', $pdf2->download()->getOriginalContent());
+        Storage::disk('local')->put('PERILAKU.pdf', $pdf3->download()->getOriginalContent());
+        Storage::disk('local')->put('PENILAIAN.pdf', $pdf->download()->getOriginalContent());
+
+        $oMerger->addPdf(Storage::disk('local')->path('FORM_SKP.pdf'), 'all');
+        $oMerger->addPdf(Storage::disk('local')->path('PENGUKURAN.pdf'), 'all');
+        $oMerger->addPdf(Storage::disk('local')->path('PERILAKU.pdf'), 'all');
+        $oMerger->addPdf(Storage::disk('local')->path('PENILAIAN.pdf'), 'all');
+        $oMerger->merge();
+        // return $pdf->stream();
+        $oMerger->save('PENILAIAN_KESELURUHAN.pdf');
+        Storage::disk('local')->delete('FORM_SKP.pdf');
+        Storage::disk('local')->delete('PENGUKURAN.pdf');
+        Storage::disk('local')->delete('PERILAKU.pdf');
+        Storage::disk('local')->delete('PENILAIAN.pdf');
+        // Storage::deleteDirectory('tmp');
+        return $oMerger->download('PENILAIAN_KESELURUHAN.pdf'); //$pdf->download('PENILAIAN.pdf');
     }
 
     public function validate_data($id)
