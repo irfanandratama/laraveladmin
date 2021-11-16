@@ -226,12 +226,9 @@ class PenilaianPerilakuController extends Controller
         $satuan = SatuanKegiatan::all();
         $user = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $skpheader->user_id)->first();
         $user_atasan = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $user->atasan_1_id)->first();
-        $penilaian = PenilaianPerilaku::where('skp_tahunan_header_id', $id)->where('status', 
-        '!=', '03')->first();
-        $tugass = TugasTambahan::where('skp_tahunan_header_id', $id)->where('status', 
-        '!=', '03')->get();
-        $kreativitas = Kreativitas::where('skp_tahunan_header_id', $id)->where('status', 
-        '!=', '03')->get();
+        $penilaian = PenilaianPerilaku::where('skp_tahunan_header_id', $id)->whereNotIn('status', ['01', '03', '04', '07'])->first();
+        $tugass = TugasTambahan::where('skp_tahunan_header_id', $id)->whereNotIn('status', ['01', '03', '04', '07'])->get();
+        $kreativitas = Kreativitas::where('skp_tahunan_header_id', $id)->whereNotIn('status', ['01', '03', '04', '07'])->get();
 
         $nilai_capaian = $skplines->sum('nilai_capaian');
         $count_lines = count($skplines);

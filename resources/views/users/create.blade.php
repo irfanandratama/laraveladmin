@@ -72,7 +72,7 @@
                             </div>
 
                             <div class="form-group">
-                                {{ Form::label('atasan_2_id', 'Atasan Lain') }}<br>
+                                {{ Form::label('atasan_2_id', 'Atasan Pejabat Langsung') }}<br>
                                 {{ Form::select('atasan_2_id', $atasans->prepend('-- Silahkan Pilih Atasan Lain --', ''), null, array('class' => 'form-control')) }}
                             </div>
 

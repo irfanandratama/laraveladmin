@@ -22,6 +22,12 @@
                                 <strong>{{ $message }}</strong>
                             </div>
                         @endif
+                        @if ($message = Session::get('error'))
+                            <div class="alert alert-danger alert-block">
+                            <button type="button" class="close" data-dismiss="alert">×</button>    
+                                <strong>{{ $message }}</strong>
+                            </div>
+                        @endif
                         @if ($errors->any())
                         <div class="alert alert-danger">
                                 <ul>
@@ -61,7 +67,9 @@
                                                 {!! Form::button('Delete', ['type' => 'submit', 'class' => 'btn btn-danger']) !!}
                                                 {!! Form::close() !!}
                                             @endif
-                                            <a href="{{ route('tahunan.export', $skp->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Cetak</a>
+                                            @if ($skp->printable)
+                                                <a href="{{ route('tahunan.export', $skp->id) }}" class="btn btn-info pull-left" style="margin-right: 3px;">Cetak</a>
+                                            @endif
 
                                             
                                             @if (strpos(strtolower($skp->keterangan), 'pengajuan') !== false)

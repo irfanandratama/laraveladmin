@@ -47,7 +47,14 @@ class SkpTahunanController extends Controller
                 $status = Status::where('status', $skp->status)->first();
                 if ($status) {
                     $skp['keterangan'] = $status->keterangan;
-                } 
+                }
+                $penilaian = PenilaianPerilaku::where('skp_tahunan_header_id', $skp->id)->whereNotIn('status', ['01', '03', '04', '07'])->first();
+
+                if ($penilaian) {
+                    $skp['printable'] = true;
+                } else {
+                    $skp['printable'] = false;
+                }
             });
 
             return view('skp.tahunan.index', compact('skps', 'users'));
@@ -62,6 +69,13 @@ class SkpTahunanController extends Controller
                 if ($status) {
                     $skp['keterangan'] = $status->keterangan;
                 } 
+                $penilaian = PenilaianPerilaku::where('skp_tahunan_header_id', $skp->id)->whereNotIn('status', ['01', '03', '04', '07'])->first();
+
+                if ($penilaian) {
+                    $skp['printable'] = true;
+                } else {
+                    $skp['printable'] = false;
+                }
             });
 
             return view('skp.tahunan.index')->with('skps', $skps);
@@ -202,22 +216,21 @@ class SkpTahunanController extends Controller
 
     public function export($id)
     {
-        
-        $skpheader = SkpTahunanHeader::find($id);
-        $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)->where('status', 
-        '!=', '03')->get();
+        $skpheader = SkpTahunanHeader::findOrFail($id);
+        $skplines = SkpTahunanLines::where('skp_tahunan_header_id', $id)->whereNotIn('status', ['01', '03', '04', '07'])->get();
         $satuan = SatuanKegiatan::all();
         $user = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $skpheader->user_id)->first();
         $user_atasan = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $user->atasan_1_id)->first();
         $user_atasan_atasan = User::query()->with(['pangkat', 'satuan_kerja'])->where('id', $user->atasan_2_id)->first();
-        $penilaian = PenilaianPerilaku::where('skp_tahunan_header_id', $id)->where('status', 
-        '!=', '03')->first();
-        $tugass = TugasTambahan::where('skp_tahunan_header_id', $id)->where('status', 
-        '!=', '03')->get();
-        $kreativitas = Kreativitas::where('skp_tahunan_header_id', $id)->where('status', 
-        '!=', '03')->get();
-        $penilaian = PenilaianPerilaku::where('skp_tahunan_header_id', $id)->where('status',
-        '!=', '03')->first();
+
+        if (!$user_atasan || !$user_atasan_atasan) {
+            return redirect()->route('tahunan.index')
+            ->with('error',
+             'Silakan mengisi data atasan baik atasan langsung atau pun atasasn dari pejabat penilai di menu user lists');
+        }
+        $tugass = TugasTambahan::where('skp_tahunan_header_id', $id)->whereNotIn('status', ['01', '03', '04', '07'])->get();
+        $kreativitas = Kreativitas::where('skp_tahunan_header_id', $id)->whereNotIn('status', ['01', '03', '04', '07'])->get();
+        $penilaian = PenilaianPerilaku::where('skp_tahunan_header_id', $id)->whereNotIn('status', ['01', '03', '04', '07'])->first();
 
         $path = base64_encode(file_get_contents(\public_path('img/garuda.jpg')));
         $type = \pathinfo('garuda.jpg', PATHINFO_EXTENSION);
