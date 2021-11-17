@@ -10,8 +10,8 @@
    <form method="POST" action="{{ route('login') }}">
       @csrf
         <div class="form-header">
-            <h2>Login</h2>
-            <p>Fill out this login form to see your dashboard!</p>
+            <h2>SI-PKP</h2>
+            <p>Sistem Informasi Penilaian Kinerja Pegawai</p>
         </div>
         
         <div class="form-group">
@@ -59,7 +59,7 @@
             </a>
         @endif
     </a></div>
-    <div class="text-center small">Create a new account? <a href="register">Register here</a></div>
+    {{-- <div class="text-center small">Create a new account? <a href="register">Register here</a></div> --}}
 </div>
 
 @endsection
