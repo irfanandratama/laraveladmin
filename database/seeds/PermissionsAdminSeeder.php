@@ -6,7 +6,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 use App\User;
 
-class PermissionsSeeder extends Seeder
+class PermissionsAdminSeeder extends Seeder
 {
     /**
      * Run the database seeds.
