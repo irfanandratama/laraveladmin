@@ -5,7 +5,7 @@
 	    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
 
-    <body>
+    <body bgcolor="black">
         <style type="text/css">
             table {
                 table-layout: fixed;
@@ -20,6 +20,9 @@
             }
             .wide {
                 width: 30%;
+            }
+            .no-break {
+                page-break-after: avoid !important;
             }
         </style>
         <center>
@@ -153,7 +156,7 @@
         </div>
 
         <br><br><br>
-        <div class="table-responsive">
+        <div class="table-responsive no-break">
             <table border="0">
                 <thead>
                     <tr>

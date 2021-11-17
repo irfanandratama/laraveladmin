@@ -241,7 +241,7 @@
                             <div class="column"></div>
                         </div>
                         <div class="row">
-                            <div class="column"><p style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; font-size: 8">11. DITERIMA TANGGAL,    <br><br><br><u>{{$user_atasan->name}}</u><br>{{$user_atasan->nip}}</p></div>
+                            <div class="column"><p style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; font-size: 8">11. DITERIMA TANGGAL,    <br><br><br><u>{{$user_atasan_atasan->name}}</u><br>{{$user_atasan_atasan->nip}}</p></div>
                             <div class="column"></div>
                         </div>
                     </div>

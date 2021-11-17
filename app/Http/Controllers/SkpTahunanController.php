@@ -324,7 +324,8 @@ class SkpTahunanController extends Controller
         Storage::disk('local')->delete('PENGUKURAN.pdf');
         Storage::disk('local')->delete('PERILAKU.pdf');
         Storage::disk('local')->delete('PENILAIAN.pdf');
-        return $oMerger->download('PENILAIAN_KESELURUHAN.pdf'); //$pdf->download('PENILAIAN.pdf');
+        $oMerger->setFileName('PENILAIAN_KESELURUHAN.pdf');
+        return $oMerger->download(); //$pdf->download('PENILAIAN.pdf');
     }
 
     public function validate_data($id)
