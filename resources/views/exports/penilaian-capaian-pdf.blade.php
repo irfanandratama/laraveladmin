@@ -155,7 +155,7 @@
             </table>
         </div>
 
-        <br><br><br>
+        <br>
         <div class="table-responsive no-break">
             <table border="0">
                 <thead>
