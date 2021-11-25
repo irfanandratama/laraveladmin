@@ -83,7 +83,7 @@
                                     @empty
                                         <tbody>
                                             <tr>
-                                                <td colSpan="8" style="text-align: center">Data Not Found</td>
+                                                <td colSpan="9" style="text-align: center">Data Not Found</td>
                                             </tr>
                                         </tbody>
                                     @endforelse
