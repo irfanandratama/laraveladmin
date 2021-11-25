@@ -42,8 +42,8 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Periode SKP</th>
                                         <th>Nama Pegawai</th>
+                                        <th>Periode SKP</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                         <th>Target & Realisasi</th>
