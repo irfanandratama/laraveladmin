@@ -67,7 +67,7 @@
                                 </div>
                                 <div class="col-lg-6 col-md-6">
                                     {{ Form::label('kegiatan', 'Kegiatan Tahunan') }}
-                                    {{ Form::textarea('kegiatan', $validation_temp->kegiatan, array('class' => 'form-control', 'rows', 'name'=>'kegiatan', 'id'=>'kegiatan', 'disabled')) }}
+                                    {{ Form::textarea('kegiatan_validation', $validation_temp->kegiatan, array('class' => 'form-control', 'rows', 'name'=>'kegiatan', 'id'=>'kegiatan', 'disabled')) }}
                                 </div>
                             </div>
 
@@ -80,7 +80,7 @@
                                     </div>
                                     <div class="col-lg-6 col-md-6">
                                         {{ Form::label('kuantitas_realisasi', 'Realisasi Kuantitas') }}
-                                        {{ Form::number('kuantitas_realisasi', $validation_temp->kuantitas_realisasi, array('class' => 'form-control', 'readonly')) }}
+                                        {{ Form::number('kuantitas_realisasi_validation', $validation_temp->kuantitas_realisasi, array('class' => 'form-control', 'readonly')) }}
                                     </div>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
                                     </div>
                                     <div class="col-lg-6 col-md-6">
                                         {{ Form::label('kualitas_realisasi', 'Realisasi Kualitas') }}
-                                        {{ Form::number('kualitas_realisasi', $validation_temp->kualitas_realisasi, array('class' => 'form-control', 'readonly')) }}
+                                        {{ Form::number('kualitas_realisasi_validation', $validation_temp->kualitas_realisasi, array('class' => 'form-control', 'readonly')) }}
                                     </div>
                                 </div>
                             </div>
@@ -105,7 +105,7 @@
                                 </div>
                                 <div class="col-lg-6 col-md-6">
                                     {{ Form::label('satuan_kegiatan', 'Satuan Kegiatan') }}
-                                    {{ Form::select('satuan_kegiatan_id', $satuankegiatan->prepend('-- Silahkan Pilih Satuan Kegiatan --', ''), $validation_temp->satuan_kegiatan_id, array('class' => 'form-control', 'readonly')) }}
+                                    {{ Form::select('satuan_kegiatan_id_validation', $satuankegiatan->prepend('-- Silahkan Pilih Satuan Kegiatan --', ''), $validation_temp->satuan_kegiatan_id, array('class' => 'form-control', 'readonly')) }}
                                 </div>
                                 
                             </div>
@@ -118,7 +118,7 @@
                                     </div>
                                     <div class="col=lg-6 col-md-6">
                                         {{ Form::label('angka_kredit', 'Angka Kredit Realisasi') }}
-                                        {{ Form::number('angka_kredit_realisasi', $validation_temp->angka_kredit_realisasi, array('class' => 'form-control', 'readonly')) }}
+                                        {{ Form::number('angka_kredit_realisasi_validation', $validation_temp->angka_kredit_realisasi, array('class' => 'form-control', 'readonly')) }}
                                     </div>
                                 </div>
                             </div>
@@ -131,7 +131,7 @@
                                     </div>
                                     <div class="col-lg-6 col-md-6">
                                         {{ Form::label('waktu_realisasi', 'Realisasi Waktu (Dalam hitungan bulan)') }}<br>
-                                        {{ Form::number('waktu_realisasi', $validation_temp->waktu_realisasi, array('class' => 'form-control', 'readonly')) }}
+                                        {{ Form::number('waktu_realisasi_validation', $validation_temp->waktu_realisasi, array('class' => 'form-control', 'readonly')) }}
                                     </div>
                                 </div>
                                 
@@ -145,7 +145,7 @@
                                     </div>
                                     <div class="col-lg-6 col-md-6">
                                         {{ Form::label('biaya_realisasi', 'Realisasi Biaya') }}<br>
-                                        {{ Form::number('biaya_realisasi', $validation_temp->biaya_realisasi, array('class' => 'form-control', 'readonly')) }}
+                                        {{ Form::number('biaya_realisasi_validation', $validation_temp->biaya_realisasi, array('class' => 'form-control', 'readonly')) }}
                                     </div>
                                 </div>
                                 
