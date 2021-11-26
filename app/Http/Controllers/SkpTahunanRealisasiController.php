@@ -350,7 +350,7 @@ class SkpTahunanRealisasiController extends Controller
         $user = User::find($skpheader->user_id);
         $satuankegiatan = SatuanKegiatan::get()->pluck('satuan_kegiatan', 'id');
 
-        $validation_temp = ValidationTemp::where('old_id', $id)->where('table_name', 'skp_tahunan_lines_target')->first();
+        $validation_temp = ValidationTemp::where('old_id', $id)->where('table_name', 'skp_tahunan_lines_realisasi')->first();
             
         $users = User::all()->pluck('name', 'id');
 
