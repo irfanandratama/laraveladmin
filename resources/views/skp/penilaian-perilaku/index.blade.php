@@ -1,7 +1,7 @@
 {{-- \resources\views\roles\index.blade.php --}}
 @extends('layouts.app')
 
-@section('title', '| SKP Tahunan')
+@section('title', '| Penilaian Perilaku')
 
 @section('content')
 
@@ -11,7 +11,7 @@
                <div class="offset-md-1 col-lg-10">
                   <div class="card">
                       <div class="card-header">
-                          <h1><i class="fa fa-key"></i> SKP Tahunan
+                          <h1><i class="fa fa-key"></i> Penilaian Perilaku
                          </h1>
                       </div>
                       <div class="card-body">
